@@ -1,0 +1,34 @@
+@startuml Activity_Admin_Master_Kelas_Mapel
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #FEF9E7
+    BorderColor #000000
+    FontColor #000000
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #D5E8D4
+    BorderColor #000000
+    FontColor #000000
+    FontSize 10
+}
+
+|Administrator|
+start
+:Akses Menu Data Kelas\n"pilih Tambah Kelas";
+:Input Lembaga, Nama\nKelas, Kode Kelas,\nMapel;
+
+|Sistem|
+:Simpan Data Kelas dan\nGenerate Kode QR\nKelas;
+
+|Administrator|
+:Preview Kode QR\nKelas;
+:Klik Cetak QR Code /\nUnduh PDF;
+stop
+@enduml

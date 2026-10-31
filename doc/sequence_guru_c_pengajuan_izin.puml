@@ -1,0 +1,56 @@
+@startuml Sequence_Guru_Pengajuan_Izin
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Guru" as Guru
+boundary "Halaman Pengajuan\n(presensi/buatizin.blade.php)" as View
+control "PresensiController" as Ctrl
+entity "Model Pengajuan\n(pengajuan_izin)" as Model
+
+title **SEQUENCE DIAGRAM - PENGAJUAN IZIN, SAKIT, DAN CUTI**
+
+activate Guru
+Guru -> View : 1: Pilih menu "Pengajuan"
+activate View
+View --> Guru : 2: Tampilkan form pengajuan
+
+Guru -> View : 3: Pilih kategori ("Izin, Sakit, Cuti") & isi kelengkapan form
+Guru -> View : 4: Klik tombol "Kirim Pengajuan"
+
+View -> Ctrl : 5: storeizin(request)
+activate Ctrl
+
+Ctrl -> Ctrl : 6: Validasi kelengkapan form input
+
+alt #FDEDEC [Tidak Valid] Kelengkapan Form Tidak Sesuai
+    Ctrl --> View : 7: Kirim pesan validasi
+    View --> Guru : 8: Tampilkan pesan kesalahan form input
+else #EAFAF1 [Valid] Kelengkapan Form Sesuai
+    Ctrl -> Model : 9: Simpan data ke tabel pengajuan (status pending)
+    activate Model
+    Model --> Ctrl : 10: Return status sukses simpan
+    deactivate Model
+
+    Ctrl --> View : 11: Redirect::back()->with('success')
+    View --> Guru : 12: Tampilkan notifikasi pengajuan terkirim ("Status Pending")
+end
+
+deactivate Ctrl
+deactivate View
+deactivate Guru
+@enduml

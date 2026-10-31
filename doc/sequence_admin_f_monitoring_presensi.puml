@@ -1,0 +1,52 @@
+@startuml Sequence_Admin_Monitoring_Presensi
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Administrator" as Admin
+boundary "Halaman Monitoring Presensi\n(presensi/monitoring.blade.php)" as View
+control "PresensiController" as Ctrl
+entity "Tabel Presensi & Karyawan\n(presensi & karyawan)" as Model
+
+title **SEQUENCE DIAGRAM - MONITORING PRESENSI ADMIN**
+
+activate Admin
+Admin -> View : 1: Akses Menu Monitoring Presensi (/presensi/monitoring)
+activate View
+View -> Ctrl : 2: monitoring()
+activate Ctrl
+
+Ctrl --> View : 3: Return view presensi/monitoring
+deactivate Ctrl
+View --> Admin : 4: Tampilkan form filter tanggal & cabang
+
+Admin -> View : 5: Pilih tanggal presensi & klik "Cari / Tampilkan"
+View -> Ctrl : 6: getpresensi(tanggal, kode_cabang, kode_dept)
+activate Ctrl
+
+Ctrl -> Model : 7: Query Data Presensi, Foto Wajah dan Koordinat GPS
+activate Model
+Model --> Ctrl : 8: Return record data presensi (jam_in, jam_out, foto_in, foto_out, lokasi_in, lokasi_out)
+deactivate Model
+
+Ctrl --> View : 9: Return view(presensi.getpresensi, compact('presensi'))
+deactivate Ctrl
+View --> Admin : 10: Menampilkan Tabel Kehadiran Guru
+
+deactivate View
+deactivate Admin
+@enduml

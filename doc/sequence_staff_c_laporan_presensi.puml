@@ -1,0 +1,68 @@
+@startuml Sequence_Staff_Laporan_Presensi
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Staff" as Staff
+boundary "Halaman Laporan Presensi\n(presensi/laporan.blade.php)" as View
+control "PresensiController" as Ctrl
+entity "Model Presensi\n(presensi)" as Model
+control "PDFGenerator\n(DomPDF)" as PDF
+
+title **SEQUENCE DIAGRAM - CETAK REKAP / LAPORAN PRESENSI (ROLE STAFF)**
+
+activate Staff
+Staff -> View : 1: Pilih menu "rekap / laporan presensi"
+activate View
+View --> Staff : 2: Tampilkan form filter periode
+
+Staff -> View : 3: Pilih filter "bulan, tahun"
+Staff -> View : 4: Pilih tombol "cetak"
+View -> Ctrl : 5: cetaklaporan(bulan, tahun)
+activate Ctrl
+
+Ctrl -> Model : 6: Ambil rekaman data presensi
+activate Model
+Model --> Ctrl : 7: Return data rekaman presensi
+deactivate Model
+
+Ctrl -> Ctrl : 8: Akumulasi total kehadiran, izin, sakit, cuti
+Ctrl -> Ctrl : 9: Generate lembar laporan / rekapitulasi presensi
+Ctrl --> View : 10: Return view preview laporan presensi
+deactivate Ctrl
+View --> Staff : 11: Tampilkan preview dokumen laporan presensi
+
+alt #EAFAF1 ya (Cetak / Unduh PDF)
+    Staff -> View : 12: Klik tombol "cetak / unduh pdf"
+    View -> Ctrl : 13: cetakPdfLaporan(bulan, tahun)
+    activate Ctrl
+
+    Ctrl -> PDF : 14: Generate stream PDF
+    activate PDF
+    PDF --> Ctrl : 15: Return stream file PDF
+    deactivate PDF
+
+    Ctrl --> View : 16: Kirim stream dokumen cetak pdf
+    deactivate Ctrl
+    View --> Staff : 17: Unduh / cetak dokumen laporan presensi
+else #FDEDEC tidak (Selesai Melihat)
+    Staff -> View : 18: Selesai melihat laporan presensi
+end
+
+deactivate View
+deactivate Staff
+@enduml

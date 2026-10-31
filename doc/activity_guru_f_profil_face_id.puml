@@ -1,0 +1,55 @@
+@startuml Activity_Guru_Profil_Face_ID
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Guru|
+start
+:Pilih menu "Profile Saya";
+:Tampilkan informasi profile guru;
+
+if (Pilihan aktivitas?) then (edit profile / ubah password)
+    :Ubah nama, nomor WA, foto, password;
+    :Klik tombol "Simpan";
+    |Sistem|
+    :Validasi format input;
+    :Update data guru;
+    |Guru|
+    :Tampilkan notifikasi "Profile Berhasil Diubah";
+    stop
+else (daftar / update face id)
+    |Guru|
+    :Klik tombol daftar/update face id;
+    :Izinkan akses kamera;
+    :Posisikan wajah dalam frame;
+    :Klik tombol "Ambil & Rekam Wajah";
+    |Sistem|
+    :Deteksi wajah dan ekstrak 128 dimensi facial landmarks;
+    if (Wajah terdeteksi?) then (ya)
+        :Simpan / update face descriptor;
+        |Guru|
+        :Tampilkan notifikasi Face ID "Berhasil Didaftarkan / Update";
+        stop
+    else (tidak)
+        |Sistem|
+        :Tampilkan pesan error;
+        stop
+    endif
+endif
+@enduml

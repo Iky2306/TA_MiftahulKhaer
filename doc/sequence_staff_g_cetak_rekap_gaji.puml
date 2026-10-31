@@ -1,0 +1,63 @@
+@startuml Sequence_Staff_Cetak_Rekap_Gaji
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Staff" as Staff
+boundary "Halaman Rekap Gaji\n(payroll/guru/rekap.blade.php)" as View
+control "PayrollController" as Ctrl
+entity "Model Payroll\n(guru, setting_gaji_guru, presensi)" as Model
+control "PDFGenerator\n(DomPDF)" as PDF
+
+title **SEQUENCE DIAGRAM - CETAK REKAP GAJI GURU (ROLE STAFF)**
+
+activate Staff
+Staff -> View : 1: Masuk ke halaman "rekap gaji guru"
+activate View
+View --> Staff : 2: Tampilkan form filter periode
+
+Staff -> View : 3: Pilih periode bulan dan tahun
+Staff -> View : 4: Klik tombol tampilkan
+View -> Ctrl : 5: rekapGajiGuru(bulan, tahun)
+activate Ctrl
+
+Ctrl -> Model : 6: Ambil data seluruh guru
+activate Model
+Model --> Ctrl : 7: Return data guru & presensi & tarif
+deactivate Model
+
+Ctrl -> Ctrl : 8: Kalkulasi akumulasi total honorarium, tunjangan, potongan, dana sosial, gaji bersih
+Ctrl --> View : 9: Return view tabel rekapitulasi
+deactivate Ctrl
+View --> Staff : 10: Tampilkan tabel rekapitulasi
+
+Staff -> View : 11: Klik tombol cetak rekap
+View -> Ctrl : 12: cetakRekapGajiGuru(bulan, tahun)
+activate Ctrl
+
+Ctrl -> PDF : 13: Generate lembar cetak master rekapitulasi
+activate PDF
+PDF --> Ctrl : 14: Return stream dokumen cetak
+deactivate PDF
+
+Ctrl --> View : 15: Kirim dokumen rekap gaji
+deactivate Ctrl
+View --> Staff : 16: Cetak / simpan rekapitulasi gaji
+
+deactivate View
+deactivate Staff
+@enduml

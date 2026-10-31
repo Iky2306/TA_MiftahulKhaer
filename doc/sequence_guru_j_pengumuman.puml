@@ -1,0 +1,58 @@
+@startuml Sequence_Guru_Pengumuman
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Guru" as Guru
+boundary "Dashboard & Pengumuman\n(dashboard/index.blade.php)" as View
+control "PengumumanController" as Ctrl
+entity "Model Pengumuman\n(pengumuman)" as Model
+
+title **SEQUENCE DIAGRAM - MELIHAT PENGUMUMAN**
+
+activate Guru
+Guru -> View : 1: Buka dashboard / halaman utama
+activate View
+View -> Ctrl : 2: getPengumumanAktif()
+activate Ctrl
+
+Ctrl -> Model : 3: Ambil daftar pengumuman aktif
+activate Model
+Model --> Ctrl : 4: Return daftar pengumuman aktif
+deactivate Model
+
+Ctrl -> Ctrl : 5: Urutkan berdasarkan tanggal terbaru
+Ctrl --> View : 6: Return view list pengumuman
+deactivate Ctrl
+View --> Guru : 7: Tampilkan daftar judul dan ringkasan pengumuman
+
+Guru -> View : 8: Klik salah satu judul pengumuman
+View -> Ctrl : 9: detailPengumuman(id)
+activate Ctrl
+
+Ctrl -> Model : 10: Ambil isi lengkap pengumuman
+activate Model
+Model --> Ctrl : 11: Return data lengkap pengumuman
+deactivate Model
+
+Ctrl --> View : 12: Return view detail pengumuman
+deactivate Ctrl
+View --> Guru : 13: Tampilkan detail pengumuman
+
+deactivate View
+deactivate Guru
+@enduml

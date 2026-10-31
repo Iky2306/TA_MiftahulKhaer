@@ -1,0 +1,55 @@
+@startuml Activity_Admin_Monitoring_Absensi
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Administrator|
+start
+:Akses menu "Monitoring Absensi" (/presensi/monitoring);
+
+|Sistem|
+:Tampilkan halaman filter monitoring absensi\n(Pilihan Tanggal, Cabang, dan Departemen);
+
+|Administrator|
+:Pilih tanggal absensi yang ingin dipantau;
+:Pilih cabang atau departemen (opsional);
+:Klik tombol "Cari / Tampilkan Data";
+
+|Sistem|
+:Ambil data presensi real-time dari database\n(jam_in, jam_out, foto_in, foto_out, lokasi, status);
+:Tampilkan tabel monitoring absensi harian guru;
+
+|Administrator|
+:Tinjau data kehadiran, jam presensi, dan foto selfie;
+if (Ingin Melacak Posisi Koordinat Guru?) then (Ya)
+    |Administrator|
+    :Klik tombol icon "Peta Lokasi" pada baris guru terpilih;
+    |Sistem|
+    :Ambil koordinat GPS lokasi presensi masuk/pulang;
+    :Tampilkan modal peta interaktif (titik presensi vs perimeter sekolah);
+    |Administrator|
+    :Melihat titik posisi presensi guru pada peta;
+    :Tutup jendela modal peta;
+else (Tidak)
+endif
+
+|Administrator|
+:Selesai memantau absensi guru;
+stop
+@enduml

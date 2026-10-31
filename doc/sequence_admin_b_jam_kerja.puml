@@ -1,0 +1,59 @@
+@startuml Sequence_Admin_Kelola_Jam_Kerja
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Administrator" as Admin
+boundary "Halaman Konfigurasi Jam Kerja\n(konfigurasi/jamkerja.blade.php)" as View
+control "KonfigurasiController" as Ctrl
+entity "Tabel Jam Kerja\n(jam_kerja)" as Model
+
+title **SEQUENCE DIAGRAM - KELOLA JAM KERJA ADMIN**
+
+activate Admin
+Admin -> View : 1: Akses Menu Konfigurasi Jam Kerja (/konfigurasi/jamkerja)
+activate View
+View -> Ctrl : 2: jamkerja()
+activate Ctrl
+
+Ctrl -> Model : 3: Ambil daftar konfigurasi jam kerja
+activate Model
+Model --> Ctrl : 4: Return data jam kerja
+deactivate Model
+
+Ctrl --> View : 5: Return view konfigurasi/jamkerja
+deactivate Ctrl
+View --> Admin : 6: Tampilkan halaman form & tabel jam kerja
+
+Admin -> View : 7: Input Kode Jam Kerja, Nama Jam Kerja, Jam Masuk/Pulang
+Admin -> View : 8: Klik tombol "Simpan"
+View -> Ctrl : 9: storejamkerja(request)
+activate Ctrl
+
+Ctrl -> Ctrl : 10: Hitung total durasi jam kerja otomatis
+Ctrl -> Model : 11: Simpan Konfigurasi Jam Kerja (insert into jam_kerja)
+activate Model
+Model --> Ctrl : 12: Return status berhasil simpan
+deactivate Model
+
+Ctrl --> View : 13: Redirect::back()->with('success')
+deactivate Ctrl
+View --> Admin : 14: Tampilkan Tabel Jam Kerja dan Pesan "Jam Kerja berhasil"
+
+deactivate View
+deactivate Admin
+@enduml

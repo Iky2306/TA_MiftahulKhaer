@@ -1,0 +1,73 @@
+@startuml Sequence_Admin_Kelola_Akun_Staff
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Administrator" as Admin
+boundary "Halaman Data Admin\n(admins/index.blade.php)" as View
+control "UserController" as Ctrl
+entity "Model User & Role\n(admins & roles)" as Model
+
+title **SEQUENCE DIAGRAM - KELOLA AKUN STAFF ADMIN**
+
+activate Admin
+Admin -> View : 1: Akses Menu Konfigurasi Data Admin (/konfigurasi/admins)
+activate View
+View -> Ctrl : 2: index()
+activate Ctrl
+
+Ctrl -> Model : 3: Ambil daftar user & roles
+activate Model
+Model --> Ctrl : 4: Return list user admin/staff
+deactivate Model
+
+Ctrl --> View : 5: Return view admins/index
+deactivate Ctrl
+View --> Admin : 6: Tampilkan tabel user
+
+Admin -> View : 7: Klik "Tambah Data"
+View --> Admin : 8: Tampilkan modal form tambah user
+
+Admin -> View : 9: Input "Nama, Email, Password, Role Staff"
+Admin -> View : 10: Klik tombol "Simpan"
+View -> Ctrl : 11: store(request)
+activate Ctrl
+
+Ctrl -> Ctrl : 12: Validasi Email dan format input
+
+alt #FDEDEC Tidak (Validasi Email Gagal / Duplikat)
+    Ctrl --> View : 13: Return notifikasi validasi gagal
+    View --> Admin : 14: Tampilkan pesan error & kembali ke form input
+else #EAFAF1 Ya (Email Valid & Unik)
+    Ctrl -> Model : 15: Simpan data akun ke tabel admins
+    activate Model
+    Model --> Ctrl : 16: Return data user tersimpan
+    deactivate Model
+
+    Ctrl -> Model : 17: Assign Hak Akses dan Simpan ($user->assignRole('staff'))
+    activate Model
+    Model --> Ctrl : 18: Return status role terhubung
+    deactivate Model
+
+    Ctrl --> View : 19: Redirect::back()->with('success')
+    deactivate Ctrl
+    View --> Admin : 20: Tampilkan Pesan "User Staff Berhasil Dibuat"
+end
+
+deactivate View
+deactivate Admin
+@enduml

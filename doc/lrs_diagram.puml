@@ -1,0 +1,218 @@
+@startuml LRS_Diagram
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+skinparam linetype ortho
+
+hide circle
+show members
+skinparam classAttributeIconSize 0
+
+' Styling Tabel LRS Klasik
+skinparam class {
+    BackgroundColor #FAFAFA
+    BorderColor #2C3E50
+    HeaderBackgroundColor #34495E
+    HeaderFontColor white
+    FontColor #1C2833
+    AttributeFontColor #1C2833
+    FontSize 11
+    BorderThickness 1.5
+}
+
+skinparam arrow {
+    Color #2980B9
+    FontColor #1B4F72
+    FontSize 10
+    Thickness 1.2
+}
+
+title **LOGICAL RECORD STRUCTURE (LRS)**\n**Sistem Presensi, E-Jurnal & Penggajian Guru**
+
+class "DEPARTEMEN" as departemen {
+    * kode_dept : CHAR(3) <PK>
+    --
+    nama_dept : VARCHAR(50)
+}
+
+class "CABANG" as cabang {
+    * kode_cabang : CHAR(3) <PK>
+    --
+    nama_cabang : VARCHAR(50)
+    lokasi_cabang : VARCHAR(255)
+    radius_cabang : INT(11)
+}
+
+class "ADMINS" as admins {
+    * id : BIGINT(20) <PK>
+    --
+    ** kode_dept : CHAR(3) <FK>
+    ** kode_cabang : CHAR(3) <FK>
+    name : VARCHAR(255)
+    email : VARCHAR(255)
+    password : VARCHAR(255)
+    remember_token : VARCHAR(100)
+    created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+}
+
+class "KARYAWAN" as karyawan {
+    * nik : CHAR(18) <PK>
+    --
+    ** kode_dept : CHAR(3) <FK>
+    ** kode_cabang : CHAR(3) <FK>
+    nama_lengkap : VARCHAR(100)
+    jabatan : VARCHAR(100)
+    no_hp : VARCHAR(13)
+    foto : VARCHAR(30)
+    status_location : CHAR(1)
+    status_jam_kerja : CHAR(1)
+    password : VARCHAR(255)
+    face_descriptor : TEXT
+    face_updated_at : TIMESTAMP
+    remember_token : VARCHAR(255)
+}
+
+class "GURU (PAYROLL)" as guru {
+    * id : BIGINT(20) <PK>
+    --
+    ** karyawan_nik : CHAR(18) <FK>
+    ** golongan : TINYINT(4) <FK>
+    lokasi_sekolah : ENUM('Pusat','Cabang')
+    jabatan : VARCHAR(100)
+    tunjangan_jabatan : BIGINT(20)
+    jam_mengajar : INT(11)
+    potongan : BIGINT(20)
+    created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+}
+
+class "SETTING_GAJI_GURU" as setting_gaji_guru {
+    * id : INT(11) <PK>
+    --
+    golongan : TINYINT(4)
+    gaji_pokok : INT(11)
+    transport : INT(11)
+    simpanan_koperasi : INT(11)
+    dana_sosial : INT(11)
+    created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+}
+
+class "JAM_KERJA" as jam_kerja {
+    * kode_jam_kerja : CHAR(4) <PK>
+    --
+    nama_jam_kerja : VARCHAR(15)
+    awal_jam_masuk : TIME
+    jam_masuk : TIME
+    akhir_jam_masuk : TIME
+    awal_jam_istirahat : TIME
+    akhir_jam_istirahat : TIME
+    status_istirahat : CHAR(1)
+    jam_pulang : TIME
+    total_jam : SMALLINT(6)
+    lintashari : CHAR(1)
+}
+
+class "MASTER_CUTI" as master_cuti {
+    * kode_cuti : CHAR(3) <PK>
+    --
+    nama_cuti : VARCHAR(30)
+    jml_hari : SMALLINT(6)
+}
+
+class "PENGAJUAN_IZIN" as pengajuan_izin {
+    * kode_izin : CHAR(9) <PK>
+    --
+    ** nik : CHAR(18) <FK>
+    ** kode_cuti : CHAR(3) <FK>
+    tgl_izin_dari : DATE
+    tgl_izin_sampai : DATE
+    status : CHAR(1)
+    keterangan : VARCHAR(255)
+    doc_sid : VARCHAR(255)
+    status_approved : CHAR(1)
+    quick_approve_token : VARCHAR(100)
+    approved_by : VARCHAR(255)
+}
+
+class "PRESENSI" as presensi {
+    * id : INT(11) <PK>
+    --
+    ** nik : CHAR(18) <FK>
+    ** kode_jam_kerja : CHAR(4) <FK>
+    ** kode_izin : CHAR(9) <FK>
+    tgl_presensi : DATE
+    jam_in : TIME
+    jam_out : TIME
+    foto_in : VARCHAR(255)
+    foto_out : VARCHAR(255)
+    lokasi_in : TEXT
+    lokasi_out : TEXT
+    status : CHAR(1)
+}
+
+class "MASTER_KELAS" as master_kelas {
+    * kode_kelas : VARCHAR(50) <PK>
+    --
+    ** kode_cabang : CHAR(3) <FK>
+    nama_kelas : VARCHAR(100)
+    lembaga : ENUM('MI','MTs','MA','SMK')
+    qr_token : VARCHAR(255)
+    created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+}
+
+class "MASTER_MAPEL_KELAS" as master_mapel_kelas {
+    * id : BIGINT(20) <PK>
+    --
+    ** kode_kelas : VARCHAR(50) <FK>
+    nama_mapel : VARCHAR(100)
+    created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+}
+
+class "JURNAL_MENGAJAR" as jurnal_mengajar {
+    * id : BIGINT(20) <PK>
+    --
+    ** nik : VARCHAR(255) <FK>
+    ** kode_kelas : VARCHAR(50) <FK>
+    tanggal : DATE
+    jam_mulai : TIME
+    jam_selesai : TIME
+    nama_mapel : VARCHAR(100)
+    materi : TEXT
+    siswa_absen : TEXT
+    foto : VARCHAR(255)
+    created_at : TIMESTAMP
+    updated_at : TIMESTAMP
+}
+
+' ================= RELASI LRS (PK -> FK) =================
+
+departemen "1" --> "N" karyawan : kode_dept
+cabang "1" --> "N" karyawan : kode_cabang
+
+departemen "1" --> "N" admins : kode_dept
+cabang "1" --> "N" admins : kode_cabang
+
+karyawan "1" --> "N" presensi : nik
+jam_kerja "1" --> "N" presensi : kode_jam_kerja
+
+karyawan "1" --> "N" pengajuan_izin : nik
+master_cuti "1" --> "N" pengajuan_izin : kode_cuti
+
+pengajuan_izin "1" --> "1" presensi : kode_izin
+
+cabang "1" --> "N" master_kelas : kode_cabang
+master_kelas "1" --> "N" master_mapel_kelas : kode_kelas
+
+karyawan "1" --> "N" jurnal_mengajar : nik
+master_kelas "1" --> "N" jurnal_mengajar : kode_kelas
+
+karyawan "1" --> "1" guru : karyawan_nik
+setting_gaji_guru "1" --> "N" guru : golongan
+
+@enduml

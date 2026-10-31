@@ -1,0 +1,67 @@
+@startuml Activity_Admin_Kelola_Guru
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Administrator|
+start
+:Akses menu "Data Guru" (/karyawan);
+
+|Sistem|
+:Ambil data guru/karyawan dari database;
+:Tampilkan tabel daftar guru, pencarian, dan tombol aksi;
+
+|Administrator|
+:Pilih aksi pengelolaan data guru;
+
+if (Pilihan Aksi?) then (Tambah / Edit Guru)
+    |Administrator|
+    :Isi / perbarui formulir biodata guru\n(NIK, Nama Lengkap, Jabatan, Departemen, No HP, Cabang, Foto);
+    :Klik tombol "Simpan";
+    |Sistem|
+    :Validasi kelengkapan data & keunikan NIK;
+    if (NIK Unik & Data Valid?) then (Ya)
+        :Simpan / perbarui data ke tabel karyawan;
+        :Simpan file foto ke penyimpanan sistem jika diunggah;
+        :Tampilkan notifikasi "Data Berhasil Disimpan";
+    else (Tidak)
+        :Tampilkan pesan error "NIK sudah terdaftar / Validasi Gagal";
+    endif
+elseif (Fitur Kontrol: Reset Password / Reset Face ID) then (Kontrol Akun)
+    |Administrator|
+    :Pilih opsi Reset Password atau Reset Face ID pada guru terpilih;
+    :Konfirmasi tindakan;
+    |Sistem|
+    :Reset kata sandi ke default atau hapus data face descriptor;
+    :Tampilkan notifikasi "Berhasil Direset";
+else (Hapus Guru)
+    |Administrator|
+    :Klik tombol "Hapus" pada data guru terpilih;
+    :Konfirmasi persetujuan penghapusan;
+    |Sistem|
+    :Hapus record guru dari tabel karyawan;
+    :Tampilkan notifikasi "Data Berhasil Dihapus";
+endif
+
+|Sistem|
+:Muat ulang (refresh) tabel data guru;
+|Administrator|
+:Melihat daftar data guru terupdate;
+stop
+@enduml

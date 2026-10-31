@@ -1,0 +1,71 @@
+@startuml Sequence_Guru_E_Jurnal
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Guru" as Guru
+boundary "Scanner QR & Form E-Jurnal\n(jurnal/create.blade.php)" as View
+control "JurnalController" as Ctrl
+entity "Model Kelas & Mapel\n(master_kelas, master_mapel_kelas)" as M_Kelas
+entity "Model Jurnal\n(jurnal_mengajar)" as M_Jurnal
+
+title **SEQUENCE DIAGRAM - SCAN QR KELAS & MENGISI E-JURNAL**
+
+activate Guru
+Guru -> View : 1: Pilih menu "E-Jurnal"
+activate View
+Guru -> View : 2: Klik tombol "Scan QR Code Kelas"
+View --> Guru : 3: Kamera scanner QR aktif
+
+Guru -> View : 4: Arahkan kamera ke QR Code kelas
+View -> Ctrl : 5: Pindai kode batang / qr token
+activate Ctrl
+
+Ctrl -> Ctrl : 6: Validasi QR token
+
+alt #FDEDEC tidak (QR Token Tidak Valid)
+    Ctrl --> View : 7: Kirim pesan error validasi QR
+    View --> Guru : 8: Tampilkan pesan error validasi QR
+else #EAFAF1 ya (QR Token Valid)
+    Ctrl -> M_Kelas : 9: Ambil data kelas dan daftar mapel kelas
+    activate M_Kelas
+    M_Kelas --> Ctrl : 10: Return data kelas & mapel
+    deactivate M_Kelas
+
+    Ctrl --> View : 11: Tampilkan form pengisian e-jurnal
+    deactivate Ctrl
+    View --> Guru : 12: Tampilkan form (Pilih Mapel, Jam, Materi)
+
+    Guru -> View : 13: Pilih mapel yang diampu, input jam mulai/selesai & materi
+    Guru -> View : 14: Klik tombol "Simpan E-Jurnal"
+    View -> Ctrl : 15: simpanEJurnal(request)
+    activate Ctrl
+
+    Ctrl -> Ctrl : 16: Validasi kelengkapan form input e-jurnal
+    Ctrl -> M_Jurnal : 17: Simpan data
+    activate M_Jurnal
+    M_Jurnal --> Ctrl : 18: Return status sukses simpan
+    deactivate M_Jurnal
+
+    Ctrl --> View : 19: Return respon sukses
+    deactivate Ctrl
+    View --> Guru : 20: Tampilkan notifikasi
+end
+
+deactivate View
+deactivate Guru
+@enduml

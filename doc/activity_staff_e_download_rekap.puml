@@ -1,0 +1,52 @@
+@startuml Activity_Staff_Download_Rekap
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Staff|
+start
+:Pilih menu "rekap gaji";
+:Pilih periode bulan dan tahun;
+
+|Sistem|
+:Ambil data seluruh guru;
+:Kalkulasi komponen perhitungan gaji;
+
+|Staff|
+:Tampilkan tabel guru rekapitulasi bulanan;
+
+if (Pilih format unduhan?) then (download pdf)
+    :Klik tombol download pdf;
+    |Sistem|
+    :Generate dokumen pdf rekap gaji;
+    :Kirim file pdf;
+    |Staff|
+    :Unduh dan simpan rekap gaji pdf;
+    stop
+else (download excel)
+    |Staff|
+    :Klik tombol download excel;
+    |Sistem|
+    :Generate dokumen excel rekap gaji;
+    :Kirim file excel;
+    |Staff|
+    :Unduh dan simpan rekap gaji excel;
+    stop
+endif
+@enduml

@@ -1,0 +1,84 @@
+graph LR
+    Admin(("👤 Administrator"))
+
+    subgraph SYS["Sistem Presensi & Manajemen Sekolah"]
+
+        subgraph DM["📋 Data Master"]
+            UC1["Kelola Data Guru/Karyawan"]
+            UC2["Kelola Master Kelas"]
+            UC3["Kelola Master Siswa"]
+            UC4["Kelola Departemen/Jabatan"]
+            UC5["Kelola Cabang/Lokasi"]
+        end
+
+        subgraph PR["⏰ Presensi"]
+            UC6["Monitoring Presensi"]
+            UC7["Koreksi Presensi"]
+            UC8["Cetak Laporan Presensi"]
+            UC9["Cetak Rekap Presensi"]
+        end
+
+        subgraph IZ["📝 Perizinan"]
+            UC10["Approve/Reject Izin & Sakit"]
+            UC11["Konfirmasi Kehadiran"]
+            UC12["Kelola Cuti"]
+            UC13["Kelola Hari Libur"]
+        end
+
+        subgraph PY["💰 Payroll"]
+            UC14["Kelola Payroll Guru"]
+            UC15["Kelola Payroll Pengabdian"]
+            UC16["Cetak Slip Gaji"]
+        end
+
+        subgraph AK["📚 Akademik"]
+            UC17["Monitoring Kelas"]
+            UC18["Laporan Jurnal Mengajar"]
+        end
+
+        subgraph KF["⚙️ Konfigurasi Sistem"]
+            UC19["Konfigurasi Lokasi Kantor"]
+            UC20["Konfigurasi Jam Kerja"]
+            UC21["Konfigurasi Jam Kerja per Jabatan"]
+            UC22["Konfigurasi Tema Dashboard"]
+            UC23["Konfigurasi Leaderboard"]
+            UC24["Konfigurasi WA Gateway"]
+        end
+
+        subgraph MA["🔧 Manajemen Akun & Lainnya"]
+            UC25["Kelola User/Admin"]
+            UC26["Kelola Pengumuman"]
+            UC27["Ganti Password"]
+            UC28["Dashboard Admin"]
+        end
+
+    end
+
+    Admin --> UC1
+    Admin --> UC2
+    Admin --> UC3
+    Admin --> UC4
+    Admin --> UC5
+    Admin --> UC6
+    Admin --> UC7
+    Admin --> UC8
+    Admin --> UC9
+    Admin --> UC10
+    Admin --> UC11
+    Admin --> UC12
+    Admin --> UC13
+    Admin --> UC14
+    Admin --> UC15
+    Admin --> UC16
+    Admin --> UC17
+    Admin --> UC18
+    Admin --> UC19
+    Admin --> UC20
+    Admin --> UC21
+    Admin --> UC22
+    Admin --> UC23
+    Admin --> UC24
+    Admin --> UC25
+    Admin --> UC26
+    Admin --> UC27
+    Admin --> UC28

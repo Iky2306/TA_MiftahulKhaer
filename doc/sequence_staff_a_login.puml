@@ -1,0 +1,57 @@
+@startuml Sequence_Staff_Login
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Staff" as Staff
+boundary "Halaman Login Panel\n(auth/loginadmin.blade.php)" as View
+control "AuthController" as Ctrl
+entity "Model User\n(users)" as Model
+
+title **SEQUENCE DIAGRAM - LOGIN STAFF TU**
+
+activate Staff
+Staff -> View : 1: Buka halaman web / login (/panel)
+activate View
+View --> Staff : 2: Tampilkan halaman login
+
+Staff -> View : 3: Masukan email dan password
+Staff -> View : 4: Klik tombol login
+View -> Ctrl : 5: prosesloginadmin(email, password)
+activate Ctrl
+
+Ctrl -> Ctrl : 6: Terima data input login
+Ctrl -> Ctrl : 7: Validasi format input dan kredensial
+
+alt #FDEDEC Tidak (Kredensial Tidak Valid)
+    Ctrl --> View : 8: Return status login gagal
+    View --> Staff : 9: Tampilkan pesan error
+else #EAFAF1 Ya (Kredensial & Role Staff Valid)
+    Ctrl -> Model : 10: Auth::guard('user')->attempt(kredensial)
+    activate Model
+    Model --> Ctrl : 11: Return data user terotentikasi
+    deactivate Model
+
+    Ctrl -> Ctrl : 12: Buat sesi login (Auth Guard: user)
+    Ctrl --> View : 13: Arahkan ke dashboard admin/staff
+    deactivate Ctrl
+    View --> Staff : 14: Tampilkan dashboard panel staff
+end
+
+deactivate View
+deactivate Staff
+@enduml

@@ -1,0 +1,43 @@
+@startuml Activity_Guru_Login
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Guru|
+start
+:Buka halaman web;
+:Tampilkan halaman login;
+:Masukan NIK dan password;
+:Klik tombol login;
+
+|Sistem|
+:Terima data input login;
+:Validasi format input;
+if (Kredensial Valid?) then (Ya)
+    :Buat sesi login (auth guard);
+    :Arahkan ke halaman utama;
+    |Guru|
+    :Tampilkan dashboard guru;
+    stop
+else (Tidak)
+    |Sistem|
+    :Tampilkan pesan error;
+    stop
+endif
+@enduml

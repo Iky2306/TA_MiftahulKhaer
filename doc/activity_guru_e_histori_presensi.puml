@@ -1,0 +1,46 @@
+@startuml Activity_Guru_Histori_Presensi
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Guru|
+start
+:Pilih menu "Histori";
+:Pilih filter bulan/tahun;
+:Klik tombol cari/tampilkan;
+
+|Sistem|
+:Ambil data presensi guru;
+
+|Guru|
+:Tampilkan daftar riwayat presensi harian;
+if (Download PDF?) then (ya)
+    :Klik tombol download PDF;
+    |Sistem|
+    :Generate dokumen PDF rekapitulasi presensi;
+    :Kirim file PDF ke perangkat guru;
+    |Guru|
+    :Unduh dan simpan dokumen rekap presensi PDF;
+    stop
+else (tidak)
+    |Guru|
+    :Selesai melihat riwayat presensi;
+    stop
+endif
+@enduml

@@ -1,0 +1,79 @@
+@startuml Sequence_Staff_Kelola_Payroll
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Staff" as Staff
+boundary "Halaman Data Payroll Guru\n(payroll/guru/data.blade.php)" as View
+control "PayrollController" as Ctrl
+entity "Model Guru\n(guru)" as Model
+
+title **SEQUENCE DIAGRAM - KELOLA DATA PAYROLL GURU (ROLE STAFF)**
+
+activate Staff
+Staff -> View : 1: Pilih menu "kelola data payroll guru"
+activate View
+View -> Ctrl : 2: dataGuru()
+activate Ctrl
+
+Ctrl -> Model : 3: Ambil data payroll guru
+activate Model
+Model --> Ctrl : 4: Return daftar payroll guru
+deactivate Model
+
+Ctrl --> View : 5: Return view data payroll
+deactivate Ctrl
+View --> Staff : 6: Tampilkan tabel daftar data payroll guru
+
+alt #EAFAF1 tambah / edit data
+    Staff -> View : 7: Pilih guru, golongan, jabatan, tunjangan, jam mengajar, potongan
+    Staff -> View : 8: Klik tombol "simpan data"
+    View -> Ctrl : 9: storeGuru(request) / updateGuru(id)
+    activate Ctrl
+
+    Ctrl -> Ctrl : 10: Validasi kelengkapan form input data payroll
+
+    alt #FDEDEC tidak (Input Tidak Valid)
+        Ctrl --> View : 11: Return respon error validasi
+        View --> Staff : 12: Tampilkan pesan error validasi input
+    else #EAFAF1 ya (Input Valid)
+        Ctrl -> Model : 13: Simpan / update data
+        activate Model
+        Model --> Ctrl : 14: Return status sukses
+        deactivate Model
+
+        Ctrl --> View : 15: Redirect::back()->with('success')
+        deactivate Ctrl
+        View --> Staff : 16: Tampilkan notifikasi data berhasil disimpan / update
+    end
+
+else #FDEDEC hapus data
+    Staff -> View : 17: Klik tombol "hapus" pada data guru terpilih
+    View -> Ctrl : 18: deleteGuru(id)
+    activate Ctrl
+    Ctrl -> Model : 19: Delete WHERE id = $id
+    activate Model
+    Model --> Ctrl : 20: Return status sukses delete
+    deactivate Model
+    Ctrl --> View : 21: Redirect::back()->with('success')
+    deactivate Ctrl
+    View --> Staff : 22: Tampilkan notifikasi data berhasil dihapus
+end
+
+deactivate View
+deactivate Staff
+@enduml

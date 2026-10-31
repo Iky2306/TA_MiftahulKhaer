@@ -1,0 +1,123 @@
+@startuml Flowchart_Sistem_Diusulkan
+!theme cerulean
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+skinparam ActivityBackgroundColor #E3F2FD
+skinparam ActivityBorderColor #1565C0
+skinparam ActivityDiamondBackgroundColor #FFF9C4
+skinparam ActivityDiamondBorderColor #F57F17
+
+|#DCEDC8| Guru/Karyawan |
+|#BBDEFB| Staff TU / Administrator |
+|#FFE0B2| Kepala Sekolah |
+
+title **FLOWCHART SISTEM YANG DIUSULKAN**\n**Proses Presensi dan Penggajian Guru**
+
+|Guru/Karyawan|
+start
+:Guru login ke aplikasi\n(Mobile/Web);
+:Guru datang ke sekolah;
+
+if (Metode Presensi?) then (GPS & Face ID)
+    :Pilih jam kerja;
+    :Presensi masuk\n(Validasi GPS + Face ID);
+else (Scan QR)
+    :Scan QR Code\ndi lokasi sekolah;
+endif
+
+:Sistem merekam data presensi\notomatis (waktu, lokasi, foto);
+
+:Guru masuk ke kelas dan\nmelaksanakan kegiatan mengajar;
+
+:Scan QR Code Kelas;
+:Input jurnal mengajar digital\n(materi, kegiatan, catatan);
+:Sistem menyimpan jurnal otomatis;
+
+if (Guru tidak hadir?) then (YA)
+    :Ajukan izin via aplikasi\n(Izin Absen / Sakit / Cuti);
+    note right
+        * Upload surat dokter (jika sakit)
+        * Pilih jenis cuti (jika cuti)
+        * Sistem cek sisa jatah cuti
+        * Notifikasi WA ke admin
+    end note
+
+    |Staff TU / Administrator|
+    :Terima notifikasi pengajuan izin;
+    if (Izin disetujui?) then (YA)
+        :Approve izin;
+        |Guru/Karyawan|
+        :Terima notifikasi\nizin disetujui;
+    else (TIDAK)
+        :Reject izin\n(dengan alasan);
+        |Guru/Karyawan|
+        :Terima notifikasi\nizin ditolak;
+    endif
+
+else (TIDAK)
+    if (Presensi bermasalah?) then (YA)
+        :Ajukan Konfirmasi\nKehadiran via aplikasi;
+
+        |Staff TU / Administrator|
+        :Terima pengajuan\nkonfirmasi kehadiran;
+        :Approve/Reject\nkonfirmasi kehadiran;
+
+        |Guru/Karyawan|
+        :Terima notifikasi\nhasil konfirmasi;
+    else (TIDAK)
+    endif
+endif
+
+:Presensi pulang\n(GPS + Face ID / QR Code);
+:Lihat histori & rekap\nabsensi bulanan;
+
+|Staff TU / Administrator|
+
+:Sistem otomatis merekap\ndata presensi seluruh guru;
+
+:Buka modul Payroll Guru;
+:Sistem menghitung otomatis:;
+note right
+    **Komponen Gaji:**
+    * Honorarium = Jam Mengajar × Tarif
+    * Kehadiran = Total Hadir × Tarif
+    * Tunjangan (jika ada)
+    * Dansos (jika ada)
+    * Potongan (jika ada)
+    ----
+    **Total = Honorarium + Kehadiran**
+    **+ Tunjangan + Dansos - Potongan**
+end note
+
+:Review & validasi data payroll;
+
+if (Data payroll sesuai?) then (YA)
+    :Simpan data payroll;
+else (TIDAK)
+    :Koreksi data presensi\n/ edit payroll;
+    :Simpan data payroll;
+endif
+
+:Cetak slip gaji digital\n(PDF/Excel);
+:Cetak rekap gaji\nseluruh guru;
+:Cetak laporan presensi\n& rekap kehadiran;
+
+|Guru/Karyawan|
+:Lihat & download\nslip gaji digital\nvia aplikasi;
+
+|Kepala Sekolah|
+:Login ke dashboard;
+:Monitoring presensi\nguru real-time;
+:Lihat laporan kehadiran\n& rekap gaji;
+note right
+    * Data tersedia real-time
+    * Tidak perlu menunggu
+      laporan fisik dari Staff TU
+    * Bisa akses kapan saja
+end note
+
+stop
+
+@enduml

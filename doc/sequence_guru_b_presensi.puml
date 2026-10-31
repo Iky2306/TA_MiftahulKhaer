@@ -1,0 +1,65 @@
+@startuml Sequence_Guru_Presensi
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Guru" as Guru
+boundary "Halaman Presensi\n(presensi/create.blade.php)" as View
+control "PresensiController" as Ctrl
+entity "Model Presensi\n(presensi)" as Model
+
+title **SEQUENCE DIAGRAM - PRESENSI MASUK / PULANG**
+
+activate Guru
+Guru -> View : 1: Pilih menu presensi "masuk/pulang"
+activate View
+View --> Guru : 2: Izinkan akses kamera & lokasi GPS
+
+Guru -> View : 3: Arahkan kamera ke wajah
+Guru -> View : 4: Klik tombol presensi "masuk/pulang"
+
+View -> Ctrl : 5: prosesPresensi(image, lokasi, face_descriptor)
+activate Ctrl
+
+Ctrl -> Ctrl : 6: Ambil titik koordinat GPS perangkat
+Ctrl -> Ctrl : 7: Hitung jarak perangkat ke titik koordinat sekolah
+
+alt #FDEDEC tidak (Di Luar Radius)
+    Ctrl --> View : 8: Kirim notifikasi diluar radius
+    View --> Guru : 9: Tampilkan notifikasi "Anda Berada di Luar Radius"
+else #EAFAF1 ya (Dalam Radius)
+    Ctrl -> Ctrl : 10: Deteksi wajah dan face descriptor
+    Ctrl -> Ctrl : 11: Cocokan dengan face descriptor db
+
+    alt #FDEDEC tidak (Wajah Tidak Cocok)
+        Ctrl --> View : 12: Kirim notifikasi wajah tidak cocok
+        View --> Guru : 13: Tampilkan notifikasi "Wajah Tidak Cocok"
+    else #EAFAF1 ya (Wajah Terverifikasi)
+        Ctrl -> Model : 14: Simpan data presensi (jam, foto, lokasi, status='h')
+        activate Model
+        Model --> Ctrl : 15: Return status sukses simpan
+        deactivate Model
+
+        Ctrl --> View : 16: Return respon presensi sukses
+        View --> Guru : 17: Tampilkan notifikasi "Presensi Berhasil"
+    end
+end
+
+deactivate Ctrl
+deactivate View
+deactivate Guru
+@enduml

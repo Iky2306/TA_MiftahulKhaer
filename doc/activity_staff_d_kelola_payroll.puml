@@ -1,0 +1,50 @@
+@startuml Activity_Staff_Kelola_Payroll
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Staff|
+start
+:Pilih menu "kelola data payroll guru";
+|Sistem|
+:Ambil data payroll guru;
+|Staff|
+:Tampilkan tabel daftar data payroll guru;
+
+if (Pilihan aksi kelola?) then (tambah / edit data)
+    :Pilih guru, golongan, jabatan, tunjangan, jam mengajar, potongan;
+    :Klik tombol "simpan data";
+    |Sistem|
+    :Validasi kelengkapan form input data payroll;
+    if (Input Valid?) then (ya)
+        :Simpan / update data;
+        |Staff|
+        :Tampilkan notifikasi data berhasil disimpan / update;
+        stop
+    else (tidak)
+        |Sistem|
+        :Tampilkan pesan error validasi input;
+        stop
+    endif
+else (hapus data)
+    |Staff|
+    :Klik tombol "hapus" pada data guru terpilih;
+    stop
+endif
+@enduml

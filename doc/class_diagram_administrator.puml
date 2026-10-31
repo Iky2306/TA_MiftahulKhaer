@@ -1,0 +1,305 @@
+@startuml Class_Diagram_Administrator
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 10
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam nodesep 50
+skinparam ranksep 45
+
+skinparam class {
+    BackgroundColor #FDFEFE
+    BorderColor #1B4F72
+    HeaderBackgroundColor #2471A3
+    HeaderFontColor white
+    FontColor #1B2631
+    AttributeFontColor #1B2631
+    FontSize 10
+    BorderThickness 1.5
+}
+
+skinparam class<<Controller>> {
+    HeaderBackgroundColor #1B4F72
+    BackgroundColor #EBF5FB
+}
+
+skinparam class<<Boundary>> {
+    HeaderBackgroundColor #6C3483
+    BackgroundColor #F4ECF7
+}
+
+skinparam arrow {
+    Color #1B4F72
+    FontColor #1B4F72
+    FontSize 9
+}
+
+title **CLASS DIAGRAM – ROLE ADMINISTRATOR**\n**Sistem Presensi, E-Jurnal & Penggajian Guru**
+
+' === BOUNDARY ===
+
+class HalamanLoginAdmin <<Boundary>> {
+    + formEmail : TextField
+    + formPassword : PasswordField
+    --
+    + tampilkanFormLogin() : View
+    + submitLogin() : Void
+}
+
+' === CONTROLLER ===
+
+class AuthController <<Controller>> {
+    - guardAdmin : String
+    --
+    + prosesLoginAdmin(email, password) : Redirect
+    + prosesLogoutAdmin() : Redirect
+}
+
+class DashboardController <<Controller>> {
+    - rankingService : RankingService
+    --
+    + dashboardAdmin() : View
+}
+
+class KonfigurasiController <<Controller>> {
+    - defaultRadius : Integer
+    --
+    + lokasikantor() : View
+    + updateLokasikantor(lat, long, radius) : Redirect
+    + jamkerja() : View
+    + storeJamkerja(dataJam) : Redirect
+    + updateJamkerja(dataJam) : Redirect
+    + deleteJamkerja(kodeJamKerja) : Redirect
+    + setJamkerja(nik) : View
+    + storeSetJamkerja(nik, hari, kode) : Redirect
+    + jamkerjaDept() : View
+    + storeJamkerjaDept(dataDept) : Redirect
+    + leaderboard() : View
+    + updateLeaderboard(konfigurasi) : Redirect
+}
+
+class PresensiMonitoringController <<Controller>> {
+    - filterTanggal : Date
+    --
+    + monitoring() : View
+    + getPresensi(tanggal) : Json
+    + tampilkanPeta(nik, tanggal) : View
+    + laporan() : View
+    + cetakLaporan(dari, sampai) : View
+    + rekap() : View
+    + cetakRekap(bulan, tahun) : View
+    + koreksiPresensi(nik, tgl) : View
+    + storeKoreksiPresensi(data) : Redirect
+    + approveIzinSakit(kodeIzin) : Json
+    + batalkanIzinSakit(kodeIzin) : Json
+}
+
+class KaryawanController <<Controller>> {
+    --
+    + index(filter) : View
+    + store(dataKaryawan) : Redirect
+    + edit(nik) : View
+    + update(nik, dataKaryawan) : Redirect
+    + delete(nik) : Redirect
+    + resetPassword(nik) : Redirect
+    + lockUnlockLocation(nik) : Redirect
+    + lockUnlockJamkerja(nik) : Redirect
+    + resetFaceId(nik) : Redirect
+}
+
+class UserController <<Controller>> {
+    --
+    + index(filter) : View
+    + store(dataUser) : Redirect
+    + edit(id) : View
+    + update(idUser, dataUser) : Redirect
+    + delete(idUser) : Redirect
+    + gantiPasswordForm() : View
+    + updatePassword(oldPwd, newPwd) : Redirect
+}
+
+class MasterKelasController <<Controller>> {
+    --
+    + index(filter) : View
+    + generateCode(lembaga) : Json
+    + store(dataKelas) : Redirect
+    + update(dataKelas) : Redirect
+    + delete(kodeKelas) : Redirect
+    + mapel(kodeKelas) : View
+    + storeMapel(kodeKelas, namaMapel) : Redirect
+    + deleteMapel(id) : Redirect
+    + importMapel(kodeKelas, file) : Redirect
+    + showQrPreview(kodeKelas) : View
+    + monitoring(filter) : View
+}
+
+class PengumumanController <<Controller>> {
+    --
+    + index() : View
+    + store(dataPengumuman) : Redirect
+    + edit(id) : View
+    + update(id, dataPengumuman) : Redirect
+    + delete(id) : Redirect
+    + setStatus(id) : Redirect
+}
+
+' === ENTITY / MODEL ===
+
+class Admins <<Entity>> {
+    + id : BigInteger
+    + kode_dept : Char(3)
+    + kode_cabang : Char(3)
+    + name : String
+    + email : String
+    - password : String
+    + remember_token : String
+    --
+    + hasRole(role) : Boolean
+    + getDaftarUser() : Collection
+}
+
+class Karyawan <<Entity>> {
+    + nik : Char(18)
+    + nama_lengkap : String
+    + jabatan : String
+    + no_hp : String
+    + foto : String
+    + status_location : Char(1)
+    + status_jam_kerja : Char(1)
+    + face_descriptor : Text
+    --
+    + resetPasswordDefault() : Boolean
+    + resetFaceBiometrik() : Boolean
+    + lockUnlockLokasi() : Boolean
+    + isPetugasPiket() : Boolean
+    + isWaliKelas() : Boolean
+}
+
+class Cabang <<Entity>> {
+    + kode_cabang : Char(3)
+    + nama_cabang : String
+    + lokasi_cabang : String
+    + radius_cabang : Integer
+    --
+    + validasiJarak(lat, long) : Boolean
+    + updateKoordinat(lat, long, rad) : Boolean
+}
+
+class JamKerja <<Entity>> {
+    + kode_jam_kerja : Char(4)
+    + nama_jam_kerja : String
+    + jam_masuk : Time
+    + jam_pulang : Time
+    + total_jam : SmallInt
+    + lintashari : Char(1)
+    --
+    + getKonfigurasiJam() : JamKerja
+}
+
+class Presensi <<Entity>> {
+    + id : Integer
+    + nik : Char(18)
+    + tgl_presensi : Date
+    + jam_in : Time
+    + jam_out : Time
+    + status : Char(1)
+    --
+    + getStatusMonitoring() : Collection
+    + getRekapPresensi() : Collection
+}
+
+class PengajuanIzin <<Entity>> {
+    + kode_izin : Char(9)
+    + nik : Char(18)
+    + status_approved : Char(1)
+    + keterangan : String
+    + doc_sid : String
+    + approved_by : String
+    --
+    + updateStatusApproval(status) : Boolean
+}
+
+class MasterKelas <<Entity>> {
+    + kode_kelas : String
+    + nama_kelas : String
+    + lembaga : Enum
+    + qr_token : String
+    --
+    + mapels() : Collection
+    + createQrToken() : String
+}
+
+class MasterMapelKelas <<Entity>> {
+    + id : BigInteger
+    + kode_kelas : String
+    + nama_mapel : String
+    --
+    + kelas() : MasterKelas
+}
+
+class Pengumuman <<Entity>> {
+    + id : Integer
+    + judul : String
+    + konten : Text
+    + tgl_pengumuman : Date
+    + status : Char(1)
+    + foto : String
+    --
+    + setStatus(status) : Boolean
+}
+
+class KonfigurasiJamKerja <<Entity>> {
+    + id : Integer
+    + nik : Char(18)
+    + hari : String
+    + kode_jam_kerja : Char(4)
+    --
+    + jamkerja() : JamKerja
+}
+
+' === RELASI BOUNDARY → CONTROLLER ===
+HalamanLoginAdmin ..> AuthController : <<uses>>
+
+' === RELASI CONTROLLER → MODEL ===
+AuthController ..> Admins : <<autentikasi>>
+DashboardController ..> Presensi : <<statistik>>
+
+KonfigurasiController ..> Cabang : <<atur lokasi>>
+KonfigurasiController ..> JamKerja : <<atur jam kerja>>
+KonfigurasiController ..> KonfigurasiJamKerja : <<set jadwal>>
+
+PresensiMonitoringController ..> Presensi : <<pantau absensi>>
+PresensiMonitoringController ..> PengajuanIzin : <<proses approval>>
+
+KaryawanController ..> Karyawan : <<kelola karyawan>>
+UserController ..> Admins : <<kelola user>>
+MasterKelasController ..> MasterKelas : <<kelola kelas>>
+MasterKelasController ..> MasterMapelKelas : <<kelola mapel>>
+PengumumanController ..> Pengumuman : <<kelola pengumuman>>
+
+' === RELASI ANTAR ENTITY ===
+Admins "1" ..> "0..*" Karyawan : kontrol akun & reset >
+Admins "1" ..> "0..*" PengajuanIzin : approval izin >
+
+Karyawan "1" -- "0..*" Presensi : riwayat absensi >
+Karyawan "1" -- "0..*" PengajuanIzin : data permohonan >
+Karyawan "1" -- "0..*" KonfigurasiJamKerja : jadwal kerja >
+
+JamKerja "1" -- "0..*" Presensi : acuan waktu >
+JamKerja "1" -- "0..*" KonfigurasiJamKerja : referensi jam >
+Cabang "1" -- "0..*" MasterKelas : unit cabang >
+
+MasterKelas "1" *-- "0..*" MasterMapelKelas : komposisi mapel >
+
+' === LAYOUT HINTS ===
+HalamanLoginAdmin -[hidden]right- AuthController
+AuthController -[hidden]right- DashboardController
+
+KonfigurasiController -[hidden]right- PresensiMonitoringController
+KaryawanController -[hidden]right- UserController
+UserController -[hidden]right- MasterKelasController
+MasterKelasController -[hidden]right- PengumumanController
+
+@enduml

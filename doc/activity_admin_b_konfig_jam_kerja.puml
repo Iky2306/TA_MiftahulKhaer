@@ -1,0 +1,60 @@
+@startuml Activity_Admin_Konfig_Jam_Kerja
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Administrator|
+start
+:Akses menu "Konfigurasi Jam Kerja" (/konfigurasi/jamkerja);
+
+|Sistem|
+:Ambil data dari tabel jam_kerja;
+:Tampilkan daftar jadwal jam kerja sekolah;
+
+|Administrator|
+:Pilih aksi kelola jam kerja;
+
+if (Pilihan Aksi?) then (Tambah / Edit Jam Kerja)
+    |Administrator|
+    :Isi / ubah formulir data jam kerja\n(Kode, Nama, Jam Masuk, Jam Pulang, Lintas Hari);
+    :Klik tombol "Simpan";
+    |Sistem|
+    :Validasi kelengkapan data & format waktu;
+    if (Data Valid & Lengkap?) then (Ya)
+        :Hitung total jam kerja otomatis;
+        :Simpan / perbarui data ke tabel jam_kerja;
+        :Tampilkan notifikasi "Data Berhasil Disimpan";
+    else (Tidak)
+        :Tampilkan pesan error validasi input;
+    endif
+else (Hapus Jam Kerja)
+    |Administrator|
+    :Klik tombol "Hapus" pada data terpilih;
+    :Konfirmasi persetujuan penghapusan;
+    |Sistem|
+    :Hapus data jam kerja dari tabel jam_kerja;
+    :Tampilkan notifikasi "Data Berhasil Dihapus";
+endif
+
+|Sistem|
+:Muat ulang (refresh) tabel daftar jam kerja;
+|Administrator|
+:Melihat daftar jadwal jam kerja terupdate;
+stop
+@enduml

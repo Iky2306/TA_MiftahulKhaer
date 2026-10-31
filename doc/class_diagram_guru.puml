@@ -1,0 +1,276 @@
+@startuml Class_Diagram_Guru
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 10
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam nodesep 50
+skinparam ranksep 45
+
+skinparam class {
+    BackgroundColor #FDFEFE
+    BorderColor #1B4F72
+    HeaderBackgroundColor #2471A3
+    HeaderFontColor white
+    FontColor #1B2631
+    AttributeFontColor #1B2631
+    FontSize 10
+    BorderThickness 1.5
+}
+
+skinparam class<<Controller>> {
+    HeaderBackgroundColor #1B4F72
+    BackgroundColor #EBF5FB
+}
+
+skinparam class<<Boundary>> {
+    HeaderBackgroundColor #6C3483
+    BackgroundColor #F4ECF7
+}
+
+skinparam arrow {
+    Color #1B4F72
+    FontColor #1B4F72
+    FontSize 9
+}
+
+title **CLASS DIAGRAM – ROLE GURU / KARYAWAN**\n**Sistem Presensi, E-Jurnal & Penggajian Guru**
+
+' === BOUNDARY ===
+
+class HalamanLoginGuru <<Boundary>> {
+    + formNIK : TextField
+    + formPassword : PasswordField
+    --
+    + tampilkanFormLogin() : View
+    + submitLogin() : Void
+}
+
+' === CONTROLLER ===
+
+class AuthController <<Controller>> {
+    - guardKaryawan : String
+    --
+    + prosesLogin(nik, password) : Redirect
+    + prosesLogout() : Redirect
+}
+
+class DashboardController <<Controller>> {
+    - rankingService : RankingService
+    --
+    + index() : View
+}
+
+class PresensiController <<Controller>> {
+    - radiusSekolah : Integer
+    - titikKoordinat : String
+    --
+    + create(kodeJamKerja) : View
+    + store(image, lokasi) : Json
+    + storeFaceDescriptor(faceData) : Json
+    + histori() : View
+    + getHistori(bulan, tahun) : Json
+    + pilihjamkerja() : View
+    + editProfile() : View
+    + updateProfile(nama, noHp, foto) : Redirect
+    + slipGaji(bulan, tahun) : View
+    + downloadSlipGaji(nik, bulan) : File
+}
+
+class IzinController <<Controller>> {
+    - uploadPath : String
+    --
+    + pengajuan() : View
+    + buatIzin() : View
+    + storeIzin(dataIzin) : Redirect
+    + izinSakit(dataIzin) : Redirect
+    + cekPengajuanIzin(tglDari, tglSampai) : Json
+    + showAct(kodeIzin) : View
+    + deleteIzin(kodeIzin) : Redirect
+}
+
+class JurnalController <<Controller>> {
+    - uploadPath : String
+    --
+    + index(bulan, tahun) : View
+    + create() : View
+    + scanProcess(qrToken) : View
+    + store(dataJurnal) : Redirect
+    + show(id) : View
+    + cetakPdf(bulan, tahun) : File
+}
+
+class GuruController <<Controller>> {
+    --
+    + jadwalMengajar() : View
+    + statusProfil() : View
+    + updateMapel(dataMapel) : Redirect
+}
+
+' === ENTITY / MODEL ===
+
+class Karyawan <<Entity>> {
+    + nik : Char(18)
+    + kode_dept : Char(3)
+    + kode_cabang : Char(3)
+    + nama_lengkap : String
+    + jabatan : String
+    + no_hp : String
+    + foto : String
+    + face_descriptor : Text
+    + face_updated_at : Timestamp
+    - password : String
+    --
+    + getProfil() : Karyawan
+    + updateProfil(nama, noHp, foto) : Boolean
+    + updateBiometrik(faceData) : Boolean
+    + isPetugasPiket() : Boolean
+    + isWaliKelas() : Boolean
+    + isGuru() : Boolean
+}
+
+class Presensi <<Entity>> {
+    + id : Integer
+    + nik : Char(18)
+    + kode_jam_kerja : Char(4)
+    + kode_izin : Char(9)
+    + tgl_presensi : Date
+    + jam_in : Time
+    + jam_out : Time
+    + foto_in : String
+    + foto_out : String
+    + lokasi_in : Text
+    + lokasi_out : Text
+    + status : Char(1)
+    --
+    + catatKehadiran() : Boolean
+    + getRekapBulanan(nik, bulan) : Collection
+}
+
+class PengajuanIzin <<Entity>> {
+    + kode_izin : Char(9)
+    + nik : Char(18)
+    + kode_cuti : Char(3)
+    + tgl_izin_dari : Date
+    + tgl_izin_sampai : Date
+    + status : Char(1)
+    + keterangan : String
+    + doc_sid : String
+    + status_approved : Char(1)
+    --
+    + ajukanIzin() : Boolean
+    + uploadSuratDokter(fileDoc) : Boolean
+}
+
+class JurnalMengajar <<Entity>> {
+    + id : BigInteger
+    + nik : String
+    + kode_kelas : String
+    + tanggal : Date
+    + jam_mulai : Time
+    + jam_selesai : Time
+    + nama_mapel : String
+    + materi : Text
+    + siswa_absen : Text
+    + foto : String
+    --
+    + simpanDataJurnal() : Boolean
+    + master_kelas() : MasterKelas
+    + karyawan() : Karyawan
+    + getLaporanJurnal() : Collection
+}
+
+class MasterKelas <<Entity>> {
+    + kode_kelas : String
+    + nama_kelas : String
+    + lembaga : Enum
+    + qr_token : String
+    --
+    + mapels() : Collection
+    + waliKelas() : Karyawan
+}
+
+class Guru <<Entity>> {
+    + id : BigInteger
+    + karyawan_nik : Char(18)
+    + golongan : TinyInt
+    + lokasi_sekolah : Enum
+    + jabatan : String
+    + tunjangan_jabatan : BigInt
+    + jam_mengajar : Integer
+    + potongan : BigInt
+    --
+    + kalkulasiGaji() : Double
+    + getSlipGaji(bulan, tahun) : View
+    + unduhSlipPdf() : File
+}
+
+class SettingGajiGuru <<Entity>> {
+    + golongan : TinyInt
+    + gaji_pokok : Integer
+    + transport : Integer
+    + simpanan_koperasi : Integer
+    + dana_sosial : Integer
+    --
+    + getTarifByGolongan(gol) : SettingGajiGuru
+}
+
+class Cabang <<Entity>> {
+    + kode_cabang : Char(3)
+    + nama_cabang : String
+    + lokasi_cabang : String
+    + radius_cabang : Integer
+    --
+    + validasiJarak(lat, long) : Boolean
+}
+
+class MasterCuti <<Entity>> {
+    + kode_cuti : Char(3)
+    + nama_cuti : String
+    + jml_hari : SmallInt
+    --
+    + getJenisCuti() : Collection
+}
+
+' === RELASI BOUNDARY → CONTROLLER ===
+HalamanLoginGuru ..> AuthController : <<uses>>
+
+' === RELASI CONTROLLER → MODEL ===
+AuthController ..> Karyawan : <<autentikasi>>
+DashboardController ..> Presensi : <<statistik>>
+
+PresensiController ..> Presensi : <<kelola presensi>>
+PresensiController ..> Karyawan : <<verifikasi wajah>>
+PresensiController ..> Cabang : <<validasi lokasi GPS>>
+PresensiController ..> Guru : <<akses slip gaji>>
+
+IzinController ..> PengajuanIzin : <<kelola izin>>
+IzinController ..> MasterCuti : <<referensi cuti>>
+
+JurnalController ..> JurnalMengajar : <<kelola e-jurnal>>
+JurnalController ..> MasterKelas : <<scan QR kelas>>
+
+GuruController ..> Karyawan : <<profil & jadwal>>
+
+' === RELASI ANTAR ENTITY ===
+Karyawan "1" -- "0..*" Presensi : mencatat presensi >
+Karyawan "1" -- "0..*" PengajuanIzin : mengajukan perizinan >
+Karyawan "1" -- "0..*" JurnalMengajar : mengisi e-jurnal >
+Karyawan "1" -- "0..1" Guru : data payroll >
+
+MasterCuti "1" -- "0..*" PengajuanIzin : jenis cuti >
+MasterKelas "1" -- "0..*" JurnalMengajar : referensi kelas >
+SettingGajiGuru "1" -- "0..*" Guru : acuan tarif gaji >
+Cabang "1" -- "0..*" Presensi : validasi area >
+
+' === LAYOUT HINTS ===
+HalamanLoginGuru -[hidden]right- AuthController
+AuthController -[hidden]right- DashboardController
+
+PresensiController -[hidden]right- IzinController
+IzinController -[hidden]right- JurnalController
+JurnalController -[hidden]right- GuruController
+
+@enduml

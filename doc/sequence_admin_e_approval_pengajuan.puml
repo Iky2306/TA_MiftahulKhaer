@@ -1,0 +1,70 @@
+@startuml Sequence_Admin_Approval_Pengajuan
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Administrator" as Admin
+boundary "Halaman Monitoring Pengajuan\n(presensi/izinsakit.blade.php)" as View
+control "PresensiController" as Ctrl
+entity "Tabel Pengajuan & Presensi\n(pengajuan_izin & presensi)" as Model
+
+title **SEQUENCE DIAGRAM - APPROVAL PENGAJUAN ADMIN**
+
+activate Admin
+Admin -> View : 1: Akses Menu Monitoring Pengajuan (/presensi/izinsakit)
+activate View
+View -> Ctrl : 2: izinsakit(request)
+activate Ctrl
+
+Ctrl -> Model : 3: Query data pengajuan izin, sakit, cuti & konfirmasi
+activate Model
+Model --> Ctrl : 4: Return list data pengajuan
+deactivate Model
+
+Ctrl --> View : 5: Return view presensi/izinsakit
+deactivate Ctrl
+View --> Admin : 6: Menampilkan Data Pengajuan "Izin, Sakit, Cuti, Konfirmasi Kehadiran"
+
+Admin -> View : 7: Klik Approval / Reject (pilih status keputusan)
+View -> Ctrl : 8: approveizinsakit(kode_izin, status_approved)
+activate Ctrl
+
+alt #EAFAF1 Approval (Disetujui)
+    Ctrl -> Model : 9a: Update status_approved = 1 pada tabel pengajuan_izin
+    activate Model
+    Model --> Ctrl : 10a: Status pengajuan terupdate
+    deactivate Model
+
+    Ctrl -> Model : 11a: Insert record absensi otomatis ke tabel presensi
+    activate Model
+    Model --> Ctrl : 12a: Record presensi tersimpan
+    deactivate Model
+else #FDEDEC Reject (Ditolak)
+    Ctrl -> Model : 9b: Update status_approved = 2 pada tabel pengajuan_izin
+    activate Model
+    Model --> Ctrl : 10b: Status pengajuan terupdate
+    deactivate Model
+end
+
+Ctrl -> Ctrl : 13: Update Status Approval / Reject berhasil
+Ctrl --> View : 14: Redirect::back()->with('success')
+deactivate Ctrl
+View --> Admin : 15: Tampilkan Status Terbaru Pengajuan "Approval / Reject"
+
+deactivate View
+deactivate Admin
+@enduml

@@ -1,0 +1,23 @@
+[30-Jul-2025 01:25:02 Asia/Jakarta] PHP Fatal error:  Namespace declaration statement has to be the very first statement or after any declare call in the script in /home2/miftahu1/siguru.miftahulkhaer.sch.id/app/Models/Karyawan.php on line 3
+[08-Nov-2025 07:07:53 UTC] PHP Fatal error:  Uncaught RuntimeException: Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home2/miftahu1/siguru.miftahulkhaer.sch.id/vendor/composer/platform_check.php:26
+Stack trace:
+#0 /home2/miftahu1/siguru.miftahulkhaer.sch.id/vendor/composer/autoload_real.php(25): require()
+#1 /home2/miftahu1/siguru.miftahulkhaer.sch.id/vendor/autoload.php(22): ComposerAutoloaderInit2d2d9cb478a361f4b754216306e08acf::getLoader()
+#2 /home2/miftahu1/siguru.miftahulkhaer.sch.id/public/index.php(34): require('/home2/miftahu1...')
+#3 {main}
+  thrown in /home2/miftahu1/siguru.miftahulkhaer.sch.id/vendor/composer/platform_check.php on line 26
+[08-Nov-2025 07:07:53 UTC] PHP Fatal error:  Uncaught RuntimeException: Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home2/miftahu1/siguru.miftahulkhaer.sch.id/vendor/composer/platform_check.php:26
+Stack trace:
+#0 /home2/miftahu1/siguru.miftahulkhaer.sch.id/vendor/composer/autoload_real.php(25): require()
+#1 /home2/miftahu1/siguru.miftahulkhaer.sch.id/vendor/autoload.php(22): ComposerAutoloaderInit2d2d9cb478a361f4b754216306e08acf::getLoader()
+#2 /home2/miftahu1/siguru.miftahulkhaer.sch.id/public/index.php(34): require('/home2/miftahu1...')
+#3 {main}
+  thrown in /home2/miftahu1/siguru.miftahulkhaer.sch.id/vendor/composer/platform_check.php on line 26
+[08-Nov-2025 08:48:05 UTC] PHP Fatal error:  Uncaught RuntimeException: Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home2/miftahu1/siguru.miftahulkhaer.sch.id/vendor/composer/platform_check.php:26
+Stack trace:
+#0 /home2/miftahu1/siguru.miftahulkhaer.sch.id/vendor/composer/autoload_real.php(25): require()
+#1 /home2/miftahu1/siguru.miftahulkhaer.sch.id/vendor/autoload.php(22): ComposerAutoloaderInit2d2d9cb478a361f4b754216306e08acf::getLoader()
+#2 /home2/miftahu1/siguru.miftahulkhaer.sch.id/public/index.php(34): require('/home2/miftahu1...')
+#3 {main}
+  thrown in /home2/miftahu1/siguru.miftahulkhaer.sch.id/vendor/composer/platform_check.php on line 26
+[22-Dec-2025 23:49:34 Asia/Jakarta] PHP Fatal error:  Cannot redeclare App\Http\Controllers\PresensiController::create() in /home2/miftahu1/siguru.miftahulkhaer.sch.id/app/Http/Controllers/PresensiController.php on line 69

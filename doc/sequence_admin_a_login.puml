@@ -1,0 +1,54 @@
+@startuml Sequence_Admin_Login
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Administrator" as Admin
+boundary "Halaman Login Panel\n(auth/loginadmin.blade.php)" as View
+control "AuthController" as Ctrl
+entity "Model User / Admin\n(admins)" as Model
+
+title **SEQUENCE DIAGRAM - LOGIN ADMIN**
+
+activate Admin
+Admin -> View : 1: Akses Halaman Login (/panel)
+activate View
+View --> Admin : 2: Tampilkan form Login
+
+Admin -> View : 3: Masukan Email dan Password
+Admin -> View : 4: Klik tombol login
+View -> Ctrl : 5: prosesloginadmin(email, password)
+activate Ctrl
+
+Ctrl -> Model : 6: Validas Email dan Role Administrator\n(Auth::guard('user')->attempt())
+activate Model
+Model --> Ctrl : 7: Return data kredensial & role pengguna
+deactivate Model
+
+alt #FDEDEC Tidak (Validasi Gagal / Role Bukan Administrator)
+    Ctrl --> View : 8: Return status login gagal
+    View --> Admin : 9: Tampilkan pesan error & kembali ke input Email dan Password
+else #EAFAF1 Ya (Email & Role Administrator Valid)
+    Ctrl -> Ctrl : 10: Buat sesi autentikasi login (Auth Guard: user)
+    Ctrl --> View : 11: Redirect ke /panel/dashboardadmin
+    deactivate Ctrl
+    View --> Admin : 12: Tampilkan Dashboard Utama
+end
+
+deactivate View
+deactivate Admin
+@enduml

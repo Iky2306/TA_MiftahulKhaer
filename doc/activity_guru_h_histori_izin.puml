@@ -1,0 +1,27 @@
+@startuml Activity_Guru_Histori_Izin
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+|Guru|
+start
+:Pilih menu "Histori Pengajuan";
+:Pilih periode bulan / tahun;
+
+|Sistem|
+:Ambil seluruh riwayat pengajuan "izin, sakit, cuti";
+:Urutkan data berdasarkan tanggal pengajuan terbaru;
+
+|Guru|
+:Tampilkan daftar histori dengan status "Pending, Disetujui, Ditolak";
+stop
+@enduml

@@ -1,0 +1,34 @@
+@startuml Activity_Admin_Login
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #FEF9E7
+    BorderColor #000000
+    FontColor #000000
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #D5E8D4
+    BorderColor #000000
+    FontColor #000000
+    FontSize 10
+}
+
+|Administrator|
+start
+:Login;
+repeat
+    :Masukan Email dan\nPassword;
+    |Sistem|
+    :Validas Email dan\nRole Administrator;
+repeat while () is (Tidak) not (Ya)
+
+|Administrator|
+:Tampilkan Dashboard\nUtama;
+stop
+@enduml

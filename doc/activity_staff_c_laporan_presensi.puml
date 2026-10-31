@@ -1,0 +1,47 @@
+@startuml Activity_Staff_Laporan_Presensi
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Staff|
+start
+:Pilih menu "rekap / laporan presensi";
+:Pilih filter "bulan, tahun";
+:Pilih tombol "cetak";
+
+|Sistem|
+:Ambil rekaman data presensi;
+:Akumulasi total kehadiran, izin, sakit, cuti;
+:Generate lembar laporan / rekapitulasi presensi;
+
+|Staff|
+:Tampilkan preview dokumen laporan presensi;
+if (Cetak / Unduh PDF?) then (ya)
+    :Klik tombol "cetak / unduh pdf";
+    |Sistem|
+    :Kirim stream dokumen cetak pdf;
+    |Staff|
+    :Unduh / cetak dokumen laporan presensi;
+    stop
+else (tidak)
+    |Staff|
+    :Selesai melihat laporan presensi;
+    stop
+endif
+@enduml

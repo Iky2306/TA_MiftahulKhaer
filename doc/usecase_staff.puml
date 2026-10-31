@@ -1,0 +1,35 @@
+@startuml UseCase_Staff
+!theme cerulean
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+title Use Case Diagram - Staff TU\nSistem Presensi & Manajemen Sekolah\n(Sistem yang Diusulkan)
+
+left to right direction
+
+actor "Staff TU" as Staff #27AE60
+
+rectangle "Sistem Presensi & Manajemen Sekolah" {
+
+    usecase "Login" as UC1
+    usecase "Setting Gaji Guru" as UC2
+    usecase "Cetak Rekap/Laporan\nPresensi" as UC3
+    usecase "Kelola Data\nPayroll Guru" as UC4
+    usecase "Cetak Rekap\nGaji Guru" as UC5
+    usecase "Download Rekap Gaji\n(PDF/Excel)" as UC6
+    usecase "Cetak Slip Gaji Guru" as UC7
+}
+
+Staff --> UC1
+Staff --> UC2
+Staff --> UC3
+Staff --> UC4
+Staff --> UC5
+Staff --> UC6
+Staff --> UC7
+
+@enduml

@@ -1,0 +1,116 @@
+@startuml UseCase_Guru_Karyawan
+!theme cerulean
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+title Use Case Diagram - Guru/Karyawan\nSistem Presensi & Manajemen Sekolah\n(Sistem yang Diusulkan)
+
+left to right direction
+
+actor "Guru/Karyawan" as Guru #2E86C1
+
+rectangle "Sistem Presensi & Manajemen Sekolah" {
+
+    package "Presensi" {
+        usecase "Pilih Jam Kerja" as UC1
+        usecase "Presensi Masuk/Pulang\n(GPS & Face ID)" as UC2
+        usecase "Presensi via\nScan QR Code" as UC3
+        usecase "Lihat Histori\nPresensi" as UC4
+        usecase "Rekap Absensi\nBulanan" as UC5
+    }
+
+    package "Perizinan" {
+        usecase "Ajukan Izin Absen" as UC6
+        usecase "Ajukan Izin Sakit" as UC7
+        usecase "Ajukan Izin Cuti" as UC8
+        usecase "Lihat Status\nPengajuan Izin" as UC9
+        usecase "Edit Pengajuan Izin" as UC10
+        usecase "Hapus Pengajuan Izin" as UC11
+    }
+
+    package "Konfirmasi Kehadiran" {
+        usecase "Buat Konfirmasi\nKehadiran" as UC12
+        usecase "Lihat Riwayat\nKonfirmasi" as UC13
+    }
+
+    package "Jurnal Mengajar" {
+        usecase "Buat Jurnal\nMengajar" as UC14
+        usecase "Scan QR Kelas\nuntuk Jurnal" as UC15
+        usecase "Lihat Daftar\nJurnal" as UC16
+        usecase "Cetak Jurnal PDF" as UC17
+    }
+
+    package "Wali Kelas" {
+        usecase "Monitoring\nKelasku" as UC18
+        usecase "Lihat Jurnal\nper Kelas" as UC19
+        usecase "Lihat Data Siswa\nper Kelas" as UC20
+        usecase "Export Data Siswa\n(PDF/Excel)" as UC21
+    }
+
+    package "Profil & Akun" {
+        usecase "Edit Profil" as UC22
+        usecase "Update Foto Profil" as UC23
+        usecase "Registrasi Face ID" as UC24
+        usecase "Lihat Status Profil\n& Update Mapel" as UC25
+    }
+
+    package "Keuangan" {
+        usecase "Lihat Slip Gaji" as UC26
+        usecase "Download Slip Gaji" as UC27
+    }
+
+    package "Komunikasi" {
+        usecase "Ruang Diskusi\n(Live Chat)" as UC28
+        usecase "Dashboard\n& Pengumuman" as UC29
+    }
+
+    package "Piket" {
+        usecase "Monitoring Piket" as UC30
+        usecase "Kirim Reminder WA\nke Guru Belum Hadir" as UC31
+    }
+
+    package "Laporan" {
+        usecase "Cetak Laporan\nGuru" as UC32
+        usecase "Lihat Jadwal\nMengajar" as UC33
+    }
+}
+
+Guru --> UC1
+Guru --> UC2
+Guru --> UC3
+Guru --> UC4
+Guru --> UC5
+Guru --> UC6
+Guru --> UC7
+Guru --> UC8
+Guru --> UC9
+Guru --> UC10
+Guru --> UC11
+Guru --> UC12
+Guru --> UC13
+Guru --> UC14
+Guru --> UC15
+Guru --> UC16
+Guru --> UC17
+Guru --> UC18
+Guru --> UC19
+Guru --> UC20
+Guru --> UC21
+Guru --> UC22
+Guru --> UC23
+Guru --> UC24
+Guru --> UC25
+Guru --> UC26
+Guru --> UC27
+Guru --> UC28
+Guru --> UC29
+Guru --> UC30
+Guru --> UC31
+Guru --> UC32
+Guru --> UC33
+
+@enduml

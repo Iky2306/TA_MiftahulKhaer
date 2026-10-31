@@ -1,0 +1,71 @@
+@startuml Sequence_Admin_Master_Kelas_Mapel
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Administrator" as Admin
+boundary "Halaman Master Kelas\n(masterkelas/index.blade.php)" as View
+control "MasterKelasController" as Ctrl
+entity "Model Kelas & Mapel\n(master_kelas & master_mapel_kelas)" as Model
+
+title **SEQUENCE DIAGRAM - MASTER KELAS DAN MAPEL ADMIN**
+
+activate Admin
+Admin -> View : 1: Akses Menu Data Kelas (/panel/masterkelas)
+activate View
+View -> Ctrl : 2: index()
+activate Ctrl
+
+Ctrl -> Model : 3: Ambil daftar data kelas & mapel
+activate Model
+Model --> Ctrl : 4: Return list master kelas
+deactivate Model
+
+Ctrl --> View : 5: Return view masterkelas/index
+deactivate Ctrl
+View --> Admin : 6: Tampilkan tabel kelas & tombol "Tambah Kelas"
+
+Admin -> View : 7: Pilih Tambah Kelas
+View --> Admin : 8: Tampilkan modal formulir tambah kelas
+
+Admin -> View : 9: Input Lembaga, Nama Kelas, Kode Kelas, Mapel
+Admin -> View : 10: Klik tombol "Simpan"
+View -> Ctrl : 11: store(request)
+activate Ctrl
+
+Ctrl -> Ctrl : 12: Generate Kode QR Kelas (UUID token unik)
+Ctrl -> Model : 13: Simpan Data Kelas ke master_kelas & mapel ke master_mapel_kelas
+activate Model
+Model --> Ctrl : 14: Return status berhasil simpan
+deactivate Model
+
+Ctrl --> View : 15: Redirect::to('/panel/masterkelas/' . $kode_kelas . '/preview-qr')
+deactivate Ctrl
+
+View -> Ctrl : 16: showQrPreview(kode_kelas)
+activate Ctrl
+Ctrl --> View : 17: Return view QR Code preview
+deactivate Ctrl
+
+View --> Admin : 18: Preview Kode QR Kelas
+
+Admin -> View : 19: Klik Cetak QR Code / Unduh PDF
+View --> Admin : 20: Cetak dokumen QR Code kelas / Unduh berkas PDF
+
+deactivate View
+deactivate Admin
+@enduml

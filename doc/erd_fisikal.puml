@@ -1,0 +1,217 @@
+@startuml ERD_Fisikal_Relasional
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+skinparam linetype ortho
+
+hide circle
+show members
+skinparam classAttributeIconSize 0
+
+' Styling Tabel ERD
+skinparam class {
+    BackgroundColor #FDFEFE
+    BorderColor #1B4F72
+    HeaderBackgroundColor #2471A3
+    HeaderFontColor white
+    FontColor #1B2631
+    AttributeFontColor #1B2631
+    FontSize 11
+    BorderThickness 1.5
+}
+
+skinparam arrow {
+    Color #2471A3
+    FontColor #1B4F72
+    FontSize 10
+}
+
+title **ENTITY RELATIONSHIP DIAGRAM (ERD) - MODEL FISIKAL & RELASIONAL**\n**Sistem Presensi, E-Jurnal & Payroll Guru (Sesuai Use Case TA)**
+
+entity "admins" as admins {
+    + id : bigint(20) [PK]
+    --
+    # kode_dept : char(3) [FK]
+    # kode_cabang : char(3) [FK]
+    name : varchar(255)
+    email : varchar(255)
+    password : varchar(255)
+    remember_token : varchar(100)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "karyawan" as karyawan {
+    + nik : char(18) [PK]
+    --
+    # kode_dept : char(3) [FK]
+    # kode_cabang : char(3) [FK]
+    nama_lengkap : varchar(100)
+    jabatan : varchar(100)
+    no_hp : varchar(13)
+    foto : varchar(30)
+    status_location : char(1)
+    status_jam_kerja : char(1)
+    password : varchar(255)
+    face_descriptor : text
+    face_updated_at : timestamp
+    remember_token : varchar(255)
+}
+
+entity "guru" as guru {
+    + id : bigint(20) [PK]
+    --
+    # karyawan_nik : char(18) [FK]
+    # golongan : tinyint(4) [FK]
+    lokasi_sekolah : enum('Pusat','Cabang')
+    jabatan : varchar(100)
+    tunjangan_jabatan : bigint(20)
+    jam_mengajar : int(11)
+    potongan : bigint(20)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "setting_gaji_guru" as setting_gaji_guru {
+    + id : int(11) [PK]
+    --
+    golongan : tinyint(4) [UK]
+    gaji_pokok : int(11)
+    transport : int(11)
+    simpanan_koperasi : int(11)
+    dana_sosial : int(11)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "departemen" as departemen {
+    + kode_dept : char(3) [PK]
+    --
+    nama_dept : varchar(50)
+}
+
+entity "cabang" as cabang {
+    + kode_cabang : char(3) [PK]
+    --
+    nama_cabang : varchar(50)
+    lokasi_cabang : varchar(255)
+    radius_cabang : int(11)
+}
+
+entity "jam_kerja" as jam_kerja {
+    + kode_jam_kerja : char(4) [PK]
+    --
+    nama_jam_kerja : varchar(15)
+    awal_jam_masuk : time
+    jam_masuk : time
+    akhir_jam_masuk : time
+    awal_jam_istirahat : time
+    akhir_jam_istirahat : time
+    status_istirahat : char(1)
+    jam_pulang : time
+    total_jam : smallint(6)
+    lintashari : char(1)
+}
+
+entity "presensi" as presensi {
+    + id : int(11) [PK]
+    --
+    # nik : char(18) [FK]
+    # kode_jam_kerja : char(4) [FK]
+    # kode_izin : char(9) [FK]
+    tgl_presensi : date
+    jam_in : time
+    jam_out : time
+    foto_in : varchar(255)
+    foto_out : varchar(255)
+    lokasi_in : text
+    lokasi_out : text
+    status : char(1)
+}
+
+entity "pengajuan_izin" as pengajuan_izin {
+    + kode_izin : char(9) [PK]
+    --
+    # nik : char(18) [FK]
+    # kode_cuti : char(3) [FK]
+    tgl_izin_dari : date
+    tgl_izin_sampai : date
+    status : char(1)
+    keterangan : varchar(255)
+    doc_sid : varchar(255)
+    status_approved : char(1)
+    quick_approve_token : varchar(100)
+    approved_by : varchar(255)
+}
+
+entity "master_cuti" as master_cuti {
+    + kode_cuti : char(3) [PK]
+    --
+    nama_cuti : varchar(30)
+    jml_hari : smallint(6)
+}
+
+entity "master_kelas" as master_kelas {
+    + kode_kelas : varchar(50) [PK]
+    --
+    # kode_cabang : char(3) [FK]
+    nama_kelas : varchar(100)
+    lembaga : enum('MI','MTs','MA','SMK')
+    qr_token : varchar(255)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "master_mapel_kelas" as master_mapel_kelas {
+    + id : bigint(20) [PK]
+    --
+    # kode_kelas : varchar(50) [FK]
+    nama_mapel : varchar(100)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "jurnal_mengajar" as jurnal_mengajar {
+    + id : bigint(20) [PK]
+    --
+    # nik : varchar(255) [FK]
+    # kode_kelas : varchar(50) [FK]
+    tanggal : date
+    jam_mulai : time
+    jam_selesai : time
+    nama_mapel : varchar(100)
+    materi : text
+    siswa_absen : text
+    foto : varchar(255)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+' ================= RELASI =================
+
+departemen ||--o{ karyawan : "kode_dept"
+cabang ||--o{ karyawan : "kode_cabang"
+
+departemen ||--o{ admins : "kode_dept"
+cabang ||--o{ admins : "kode_cabang"
+
+karyawan ||--o{ presensi : "nik"
+jam_kerja ||--o{ presensi : "kode_jam_kerja"
+
+karyawan ||--o{ pengajuan_izin : "nik"
+master_cuti ||--o{ pengajuan_izin : "kode_cuti"
+
+pengajuan_izin ||--o| presensi : "kode_izin"
+
+master_kelas ||--o{ master_mapel_kelas : "kode_kelas"
+cabang ||--o{ master_kelas : "kode_cabang"
+
+karyawan ||--o{ jurnal_mengajar : "nik"
+master_kelas ||--o{ jurnal_mengajar : "kode_kelas"
+
+karyawan ||--o| guru : "karyawan_nik"
+setting_gaji_guru ||--o{ guru : "golongan"
+
+@enduml

@@ -1,0 +1,66 @@
+@startuml Sequence_Admin_Kelola_Pengumuman
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Administrator" as Admin
+boundary "Halaman Kelola Pengumuman\n(pengumuman/index.blade.php)" as View
+control "PengumumanController" as Ctrl
+entity "Model Pengumuman\n(pengumuman)" as Model
+
+title **SEQUENCE DIAGRAM - KELOLA PENGUMUMAN**
+
+activate Admin
+Admin -> View : 1: Akses Menu Kelola Pengumuman (/pengumuman)
+activate View
+View -> Ctrl : 2: index()
+activate Ctrl
+
+Ctrl -> Model : 3: Ambil daftar pengumuman terbit
+activate Model
+Model --> Ctrl : 4: Return list pengumuman
+deactivate Model
+
+Ctrl --> View : 5: Return view pengumuman/index
+deactivate Ctrl
+View --> Admin : 6: Tampilkan tabel daftar pengumuman sekolah
+
+Admin -> View : 7: Input form pengumuman (Judul, Tanggal, Isi, Tautan, Lampiran File)
+Admin -> View : 8: Klik tombol "Simpan"
+View -> Ctrl : 9: store(request)
+activate Ctrl
+
+Ctrl -> Ctrl : 10: Validasi kelengkapan form & format berkas lampiran
+
+alt #FDEDEC Tidak (Validasi Gagal)
+    Ctrl --> View : 11: Return pesan validasi error
+    View --> Admin : 12: Tampilkan pesan peringatan kesalahan form/file
+else #EAFAF1 Ya (Form Lengkap & Berkas Valid)
+    Ctrl -> Ctrl : 13: Simpan file gambar & dokumen ke folder storage
+    Ctrl -> Model : 14: Simpan data pengumuman ke tabel pengumuman
+    activate Model
+    Model --> Ctrl : 15: Return status berhasil simpan
+    deactivate Model
+
+    Ctrl --> View : 16: Redirect::back()->with('success')
+    deactivate Ctrl
+    View --> Admin : 17: Tampilkan notifikasi "Data Berhasil Disimpan" & refresh daftar
+end
+
+deactivate View
+deactivate Admin
+@enduml

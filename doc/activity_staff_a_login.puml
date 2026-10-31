@@ -1,0 +1,43 @@
+@startuml Activity_Staff_Login
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Staff|
+start
+:Buka halaman login panel (/panel);
+:Tampilkan halaman login admin/staff;
+:Masukan email dan password;
+:Klik tombol login;
+
+|Sistem|
+:Terima data input login;
+:Validasi format input dan kredensial;
+if (Kredensial & Role Staff Valid?) then (Ya)
+    :Buat sesi login (Auth Guard: user);
+    :Arahkan ke dashboard admin/staff;
+    |Staff|
+    :Tampilkan dashboard panel staff;
+    stop
+else (Tidak)
+    |Sistem|
+    :Tampilkan pesan error kredensial salah;
+    stop
+endif
+@enduml

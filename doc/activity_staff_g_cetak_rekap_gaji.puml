@@ -1,0 +1,43 @@
+@startuml Activity_Staff_Cetak_Rekap_Gaji
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Staff|
+start
+:Masuk ke halaman "rekap gaji guru";
+:Pilih periode bulan dan tahun;
+:Klik tombol tampilkan;
+
+|Sistem|
+:Ambil data seluruh guru;
+:Kalkulasi akumulasi total honorarium, tunjangan, potongan, dana sosial, gaji bersih;
+
+|Staff|
+:Tampilkan tabel rekapitulasi;
+:Klik tombol cetak rekap;
+
+|Sistem|
+:Generate lembar cetak master rekapitulasi;
+:Kirim dokumen rekap gaji;
+
+|Staff|
+:Cetak / simpan rekapitulasi gaji;
+stop
+@enduml

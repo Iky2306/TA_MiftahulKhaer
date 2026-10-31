@@ -1,0 +1,75 @@
+@startuml Sequence_Guru_Profil_Face_ID
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Guru" as Guru
+boundary "Halaman Profil\n(presensi/editprofile.blade.php)" as View
+control "PresensiController" as Ctrl
+entity "Model Karyawan\n(karyawan)" as Model
+
+title **SEQUENCE DIAGRAM - PROFIL DAN FACE ID GURU**
+
+activate Guru
+Guru -> View : 1: Pilih menu "Profile Saya"
+activate View
+View --> Guru : 2: Tampilkan informasi profile guru
+
+alt #EAFAF1 edit profile / ubah password
+    Guru -> View : 3: Ubah nama, nomor WA, foto, password
+    Guru -> View : 4: Klik tombol "Simpan"
+    View -> Ctrl : 5: updateProfile(request)
+    activate Ctrl
+
+    Ctrl -> Ctrl : 6: Validasi format input
+    Ctrl -> Model : 7: Update data guru
+    activate Model
+    Model --> Ctrl : 8: Return status sukses update
+    deactivate Model
+
+    Ctrl --> View : 9: Redirect::back()->with('success')
+    deactivate Ctrl
+    View --> Guru : 10: Tampilkan notifikasi "Profile Berhasil Diubah"
+
+else #FEF9E7 daftar / update face id
+    Guru -> View : 11: Klik tombol "Daftar / Update Face ID"
+    View --> Guru : 12: Izinkan akses kamera & posisikan wajah dalam frame
+
+    Guru -> View : 13: Klik tombol "Ambil & Rekam Wajah"
+    View -> Ctrl : 14: simpanFaceId(face_descriptor)
+    activate Ctrl
+
+    Ctrl -> Ctrl : 15: Deteksi wajah dan ekstrak 128 dimensi facial landmarks
+
+    alt #FDEDEC tidak (Gagal Deteksi Wajah)
+        Ctrl --> View : 16: Return respon error
+        View --> Guru : 17: Tampilkan pesan error
+    else #EAFAF1 ya (Wajah Terdeteksi)
+        Ctrl -> Model : 18: Simpan / update face descriptor
+        activate Model
+        Model --> Ctrl : 19: Return status sukses simpan
+        deactivate Model
+
+        Ctrl --> View : 20: Return respon sukses
+        deactivate Ctrl
+        View --> Guru : 21: Tampilkan notifikasi Face ID "Berhasil Didaftarkan / Update"
+    end
+end
+
+deactivate View
+deactivate Guru
+@enduml

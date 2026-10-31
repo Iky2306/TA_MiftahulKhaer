@@ -1,0 +1,59 @@
+@startuml Sequence_Admin_Lokasi_Sekolah
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Administrator" as Admin
+boundary "Halaman Lokasi Sekolah\n(konfigurasi/lokasikantor.blade.php)" as View
+control "KonfigurasiController" as Ctrl
+entity "Tabel Lokasi & Geofencing\n(konfigurasi_lokasi)" as Model
+
+title **SEQUENCE DIAGRAM - LOKASI SEKOLAH ADMIN**
+
+activate Admin
+Admin -> View : 1: Akses Menu Lokasi Sekolah (/konfigurasi/lokasikantor)
+activate View
+View -> Ctrl : 2: lokasikantor()
+activate Ctrl
+
+Ctrl -> Model : 3: Ambil titik koordinat GPS & radius aktif
+activate Model
+Model --> Ctrl : 4: Return data lokasi & perimeter sekolah
+deactivate Model
+
+Ctrl --> View : 5: Return view konfigurasi/lokasikantor
+deactivate Ctrl
+View --> Admin : 6: Tampilkan peta interaktif dan form lokasi
+
+Admin -> View : 7: Set Poin Koordinat GPS\n"Nama Lokasi, Kode Lokasi, Latitude, Longitude, Radius"
+Admin -> View : 8: Klik tombol "Update Lokasi"
+View -> Ctrl : 9: updatelokasikantor(request)
+activate Ctrl
+
+Ctrl -> Ctrl : 10: Validasi Titik Geofencing (koordinat & radius)
+Ctrl -> Model : 11: Simpan pembaruan titik geofencing ke tabel konfigurasi_lokasi
+activate Model
+Model --> Ctrl : 12: Return status update berhasil
+deactivate Model
+
+Ctrl --> View : 13: Redirect::back()->with('success')
+deactivate Ctrl
+View --> Admin : 14: Tampilkan Pesan Berhasil
+
+deactivate View
+deactivate Admin
+@enduml

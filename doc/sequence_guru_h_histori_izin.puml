@@ -1,0 +1,48 @@
+@startuml Sequence_Guru_Histori_Izin
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Guru" as Guru
+boundary "Halaman Histori Pengajuan\n(presensi/izin.blade.php)" as View
+control "PresensiController" as Ctrl
+entity "Model Pengajuan\n(pengajuan_izin)" as Model
+
+title **SEQUENCE DIAGRAM - HISTORI PENGAJUAN IZIN, SAKIT, DAN CUTI**
+
+activate Guru
+Guru -> View : 1: Pilih menu "Histori Pengajuan"
+activate View
+View --> Guru : 2: Tampilkan pilihan filter periode bulan / tahun
+
+Guru -> View : 3: Pilih periode bulan / tahun
+View -> Ctrl : 4: getHistoriPengajuan(bulan, tahun)
+activate Ctrl
+
+Ctrl -> Model : 5: Ambil seluruh riwayat pengajuan "izin, sakit, cuti"
+activate Model
+Model --> Ctrl : 6: Return data riwayat pengajuan
+deactivate Model
+
+Ctrl -> Ctrl : 7: Urutkan data berdasarkan tanggal pengajuan terbaru
+Ctrl --> View : 8: Return view daftar histori pengajuan
+deactivate Ctrl
+
+View --> Guru : 9: Tampilkan daftar histori dengan status "Pending, Disetujui, Ditolak"
+deactivate View
+deactivate Guru
+@enduml

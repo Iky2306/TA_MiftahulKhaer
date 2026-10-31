@@ -1,0 +1,97 @@
+@startuml UseCase_Administrator
+!theme cerulean
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+title Use Case Diagram - Administrator\nSistem Presensi & Manajemen Sekolah\n(Sistem yang Diusulkan)
+
+left to right direction
+
+actor "Administrator" as Admin #336699
+
+rectangle "Sistem Presensi & Manajemen Sekolah" {
+
+    package "Data Master" {
+        usecase "Kelola Data\nGuru/Karyawan" as UC1
+        usecase "Kelola Master Kelas" as UC2
+        usecase "Kelola Master Siswa" as UC3
+        usecase "Kelola\nDepartemen/Jabatan" as UC4
+        usecase "Kelola Cabang/Lokasi" as UC5
+    }
+
+    package "Presensi" {
+        usecase "Monitoring Presensi" as UC6
+        usecase "Koreksi Presensi" as UC7
+        usecase "Cetak Laporan\nPresensi" as UC8
+        usecase "Cetak Rekap Presensi" as UC9
+    }
+
+    package "Perizinan" {
+        usecase "Approve/Reject\nIzin & Sakit" as UC10
+        usecase "Konfirmasi Kehadiran" as UC11
+        usecase "Kelola Cuti" as UC12
+        usecase "Kelola Hari Libur" as UC13
+    }
+
+    package "Payroll" {
+        usecase "Kelola Payroll Guru" as UC14
+        usecase "Kelola Payroll\nPengabdian" as UC15
+        usecase "Cetak Slip Gaji" as UC16
+    }
+
+    package "Akademik" {
+        usecase "Monitoring Kelas" as UC17
+        usecase "Laporan Jurnal\nMengajar" as UC18
+    }
+
+    package "Konfigurasi Sistem" {
+        usecase "Konfigurasi\nLokasi Kantor" as UC19
+        usecase "Konfigurasi Jam Kerja" as UC20
+        usecase "Konfigurasi Jam Kerja\nper Jabatan" as UC21
+        usecase "Konfigurasi\nTema Dashboard" as UC22
+        usecase "Konfigurasi\nLeaderboard" as UC23
+        usecase "Konfigurasi\nWA Gateway" as UC24
+    }
+
+    package "Manajemen Akun" {
+        usecase "Kelola User/Admin" as UC25
+        usecase "Kelola Pengumuman" as UC26
+        usecase "Ganti Password" as UC27
+        usecase "Dashboard Admin" as UC28
+    }
+}
+
+Admin --> UC1
+Admin --> UC2
+Admin --> UC3
+Admin --> UC4
+Admin --> UC5
+Admin --> UC6
+Admin --> UC7
+Admin --> UC8
+Admin --> UC9
+Admin --> UC10
+Admin --> UC11
+Admin --> UC12
+Admin --> UC13
+Admin --> UC14
+Admin --> UC15
+Admin --> UC16
+Admin --> UC17
+Admin --> UC18
+Admin --> UC19
+Admin --> UC20
+Admin --> UC21
+Admin --> UC22
+Admin --> UC23
+Admin --> UC24
+Admin --> UC25
+Admin --> UC26
+Admin --> UC27
+Admin --> UC28
+
+@enduml

@@ -1,0 +1,65 @@
+@startuml Sequence_Guru_Histori_Jurnal
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Guru" as Guru
+boundary "Halaman Histori E-Jurnal\n(jurnal/histori.blade.php)" as View
+control "JurnalController" as Ctrl
+entity "Model Jurnal\n(jurnal_mengajar)" as Model
+control "PDFGenerator\n(DomPDF)" as PDF
+
+title **SEQUENCE DIAGRAM - HISTORI E-JURNAL DAN DOWNLOAD PDF**
+
+activate Guru
+Guru -> View : 1: Pilih menu "E-Jurnal"
+activate View
+View --> Guru : 2: Tampilkan form filter periode tanggal dan sampai
+
+Guru -> View : 3: Pilih periode tanggal & klik tombol "Cari"
+View -> Ctrl : 4: getHistoriJurnal(dari, sampai)
+activate Ctrl
+
+Ctrl -> Model : 5: Ambil data jurnal mengajar guru
+activate Model
+Model --> Ctrl : 6: Return data jurnal mengajar
+deactivate Model
+
+Ctrl --> View : 7: Return view daftar riwayat jurnal
+deactivate Ctrl
+View --> Guru : 8: Tampilkan daftar riwayat jurnal
+
+alt #EAFAF1 ya (Download PDF)
+    Guru -> View : 9: Klik tombol "Download PDF"
+    View -> Ctrl : 10: cetakPdfJurnal(dari, sampai)
+    activate Ctrl
+
+    Ctrl -> PDF : 11: Generate dokumen PDF riwayat e-jurnal
+    activate PDF
+    PDF --> Ctrl : 12: Return berkas PDF
+    deactivate PDF
+
+    Ctrl --> View : 13: Kirim file PDF
+    deactivate Ctrl
+    View --> Guru : 14: Unduh dan simpan file PDF
+else #FDEDEC tidak (Selesai Melihat)
+    Guru -> View : 15: Selesai melihat riwayat e-jurnal
+end
+
+deactivate View
+deactivate Guru
+@enduml

@@ -1,0 +1,60 @@
+@startuml Activity_Admin_Kelola_Pengumuman
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Administrator|
+start
+:Akses menu "Kelola Pengumuman" (/pengumuman);
+
+|Sistem|
+:Ambil data pengumuman dari database;
+:Tampilkan tabel daftar pengumuman sekolah;
+
+|Administrator|
+:Pilih aksi pengelolaan pengumuman;
+
+if (Pilihan Aksi?) then (Tambah / Edit Pengumuman)
+    |Administrator|
+    :Isi / perbarui formulir pengumuman\n(Judul, Tanggal, Isi Konten, Tautan Link, Upload Foto/Dokumen Lampiran);
+    :Klik tombol "Simpan";
+    |Sistem|
+    :Validasi kelengkapan form & format file lampiran;
+    if (Form Lengkap & File Valid?) then (Ya)
+        :Simpan file foto/dokumen ke folder storage uploads;
+        :Simpan / perbarui data ke tabel pengumuman;
+        :Tampilkan notifikasi "Data Berhasil Disimpan";
+    else (Tidak)
+        :Tampilkan pesan error validasi input/file;
+    endif
+else (Hapus Pengumuman)
+    |Administrator|
+    :Klik tombol "Hapus" pada pengumuman terpilih;
+    :Konfirmasi persetujuan penghapusan;
+    |Sistem|
+    :Hapus record pengumuman & file lampiran fisik dari storage;
+    :Tampilkan notifikasi "Data Berhasil Dihapus";
+endif
+
+|Sistem|
+:Muat ulang (refresh) daftar pengumuman;
+|Administrator|
+:Melihat daftar pengumuman sekolah terupdate;
+stop
+@enduml

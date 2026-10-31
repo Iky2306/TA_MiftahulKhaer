@@ -1,0 +1,33 @@
+@startuml Activity_Guru_Pengumuman
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+|Guru|
+start
+:Buka dashboard / halaman utama;
+
+|Sistem|
+:Ambil daftar pengumuman aktif;
+:Urutkan berdasarkan tanggal terbaru;
+
+|Guru|
+:Tampilkan daftar judul dan ringkasan pengumuman;
+:Klik salah satu judul pengumuman;
+
+|Sistem|
+:Ambil isi lengkap pengumuman;
+
+|Guru|
+:Tampilkan detail pengumuman;
+stop
+@enduml

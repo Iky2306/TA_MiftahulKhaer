@@ -1,0 +1,36 @@
+@startuml Activity_Staff_Cetak_Slip
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+|Staff|
+start
+:Masuk ke halaman "rekap gaji guru";
+:Pilih periode bulan dan tahun;
+:Klik tombol tampilkan;
+
+|Sistem|
+:Ambil data seluruh guru;
+:Hitung tjm, honorarium, kehadiran, potongan;
+
+|Staff|
+:Tampilkan tabel rekapitulasi gaji;
+:Klik tombol "cetak slip gaji";
+
+|Sistem|
+:Generate lembar cetak slip gaji guru;
+:Kirim dokumen slip gaji;
+
+|Staff|
+:Cetak / simpan berkas slip gaji guru;
+stop
+@enduml

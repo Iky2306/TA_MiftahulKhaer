@@ -1,0 +1,60 @@
+@startuml Activity_Admin_Kelola_User
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Administrator|
+start
+:Akses menu "Kelola User/Admin" (/konfigurasi/admins);
+
+|Sistem|
+:Ambil data user dan role dari database;
+:Tampilkan tabel daftar akun pengguna panel (Staff / Admin / Piket);
+
+|Administrator|
+:Pilih aksi manajemen user;
+
+if (Pilihan Aksi?) then (Tambah / Edit User)
+    |Administrator|
+    :Isi / ubah formulir data user\n(Nama, Email, Password, Role/Hak Akses, Cabang);
+    :Klik tombol "Simpan";
+    |Sistem|
+    :Validasi kelengkapan form & format email;
+    if (Email Unik & Format Valid?) then (Ya)
+        :Simpan / perbarui data akun ke tabel admins;
+        :Tetapkan hak akses peran pengguna (assignRole);
+        :Tampilkan notifikasi "Data Berhasil Disimpan";
+    else (Tidak)
+        :Tampilkan pesan error "Email sudah terdaftar / Data tidak valid";
+    endif
+else (Hapus User)
+    |Administrator|
+    :Klik tombol "Hapus" pada user terpilih;
+    :Konfirmasi penghapusan akun;
+    |Sistem|
+    :Hapus data user dari tabel admins;
+    :Tampilkan notifikasi "Data Berhasil Dihapus";
+endif
+
+|Sistem|
+:Muat ulang (refresh) daftar pengguna;
+|Administrator|
+:Melihat daftar pengguna sistem terupdate;
+stop
+@enduml

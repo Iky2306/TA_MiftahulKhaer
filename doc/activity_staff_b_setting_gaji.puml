@@ -1,0 +1,46 @@
+@startuml Activity_Staff_Setting_Gaji
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Staff|
+start
+:Pilih menu "Setting Gaji Guru";
+|Sistem|
+:Ambil data konfigurasi tarif gaji per golongan;
+|Staff|
+:Tampilkan formulir setting gaji (Golongan, Gaji Pokok, Transport, Simpanan, Dana Sosial);
+:Input / perbarui nominal komponen gaji per golongan;
+:Klik tombol "Simpan Pengaturan";
+
+|Sistem|
+:Validasi kelengkapan format input nominal;
+if (Format Input Valid?) then (Ya)
+    :Simpan / perbarui tarif gaji ke tabel setting_gaji_guru;
+    |Staff|
+    :Tampilkan notifikasi "Pengaturan Gaji Berhasil Disimpan";
+    stop
+else (Tidak)
+    |Sistem|
+    :Kirim pesan validasi kesalahan input;
+    |Staff|
+    :Tampilkan pesan error validasi form;
+    stop
+endif
+@enduml

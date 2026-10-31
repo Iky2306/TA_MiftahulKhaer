@@ -1,0 +1,49 @@
+@startuml Activity_Guru_Slip_Gaji
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Guru|
+start
+:Pilih menu "Slip Gaji";
+:Pilih periode bulan dan tahun;
+:Klik tombol cari;
+
+|Sistem|
+:Ambil data payroll guru;
+:Hitung total dan jam mengajar pada bulan terpilih;
+:Kalkulasi komponen gaji;
+:Hitung total gaji;
+
+|Guru|
+:Tampilkan rincian slip gaji;
+if (Download PDF?) then (Ya)
+    :Klik tombol "Download PDF";
+    |Sistem|
+    :Generate dokumen PDF slip gaji;
+    :Kirim file PDF;
+    |Guru|
+    :Unduh dan simpan file PDF;
+    stop
+else (Tidak)
+    |Guru|
+    :Selesai melihat rincian gaji;
+    stop
+endif
+@enduml

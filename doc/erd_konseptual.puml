@@ -1,0 +1,107 @@
+@startuml ERD_Konseptual_Chen
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+' Entitas (Persegi Panjang)
+skinparam rectangle {
+    BackgroundColor #E8F8F5
+    BorderColor #117864
+    BorderThickness 1.8
+    FontColor #0E6251
+    FontSize 12
+    FontStyle bold
+}
+
+' Relasi (Belah Ketupat / Card)
+skinparam card {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    BorderThickness 1.5
+    FontColor #7D6608
+    FontSize 11
+    FontStyle bold
+}
+
+skinparam arrow {
+    Color #2C3E50
+    FontColor #1B4F72
+    FontSize 10
+    FontStyle bold
+}
+
+title **ENTITY RELATIONSHIP DIAGRAM (ERD) - KONSEPTUAL**\n**Sistem Presensi, E-Jurnal & Payroll Guru (Sesuai Use Case TA)**
+
+' ================= ENTITAS =================
+rectangle "KARYAWAN\n(DATA GURU)" as E_GURU
+rectangle "GURU_PAYROLL\n(DATA GAJI)" as E_PAYROLL
+rectangle "SETTING_GAJI\n(TARIF GOLONGAN)" as E_GAJI
+rectangle "DEPARTEMEN" as E_DEPT
+rectangle "CABANG\n(LOKASI)" as E_CABANG
+rectangle "JAM_KERJA" as E_JAMKERJA
+rectangle "PRESENSI" as E_PRESENSI
+rectangle "PENGAJUAN_IZIN" as E_IZIN
+rectangle "MASTER_CUTI" as E_CUTI
+rectangle "MASTER_KELAS" as E_KELAS
+rectangle "MAPEL_KELAS" as E_MAPEL
+rectangle "JURNAL_MENGAJAR" as E_JURNAL
+rectangle "ADMINS\n(USER)" as E_USER
+
+' ================= RELASI =================
+card "<> Memiliki" as R_GURU_DEPT
+card "<> Ditempatkan" as R_GURU_CABANG
+card "<> Melakukan" as R_GURU_PRESENSI
+card "<> Mengikuti" as R_PRESENSI_JAM
+card "<> Mengajukan" as R_GURU_IZIN
+card "<> Kategori" as R_IZIN_CUTI
+card "<> Mengisi" as R_GURU_JURNAL
+card "<> Di Kelas" as R_JURNAL_KELAS
+card "<> Mempunyai" as R_KELAS_MAPEL
+card "<> Memiliki Data" as R_GURU_PAYROLL
+card "<> Mengacu Golongan" as R_PAYROLL_SETTING
+card "<> Bertugas di" as R_ADMIN_CABANG
+card "<> Terhubung" as R_PRESENSI_IZIN
+
+' ================= HUBUNGAN KARDINALITAS =================
+E_DEPT "1" --- R_GURU_DEPT
+R_GURU_DEPT --- "N" E_GURU
+
+E_CABANG "1" --- R_GURU_CABANG
+R_GURU_CABANG --- "N" E_GURU
+
+E_GURU "1" --- R_GURU_PRESENSI
+R_GURU_PRESENSI --- "N" E_PRESENSI
+
+E_JAMKERJA "1" --- R_PRESENSI_JAM
+R_PRESENSI_JAM --- "N" E_PRESENSI
+
+E_GURU "1" --- R_GURU_IZIN
+R_GURU_IZIN --- "N" E_IZIN
+
+E_CUTI "1" --- R_IZIN_CUTI
+R_IZIN_CUTI --- "N" E_IZIN
+
+E_IZIN "1" --- R_PRESENSI_IZIN
+R_PRESENSI_IZIN --- "1" E_PRESENSI
+
+E_GURU "1" --- R_GURU_JURNAL
+R_GURU_JURNAL --- "N" E_JURNAL
+
+E_KELAS "1" --- R_JURNAL_KELAS
+R_JURNAL_KELAS --- "N" E_JURNAL
+
+E_KELAS "1" --- R_KELAS_MAPEL
+R_KELAS_MAPEL --- "N" E_MAPEL
+
+E_GURU "1" --- R_GURU_PAYROLL
+R_GURU_PAYROLL --- "1" E_PAYROLL
+
+E_GAJI "1" --- R_PAYROLL_SETTING
+R_PAYROLL_SETTING --- "N" E_PAYROLL
+
+E_USER "1" --- R_ADMIN_CABANG
+R_ADMIN_CABANG --- "N" E_CABANG
+
+@enduml

@@ -1,0 +1,51 @@
+@startuml Sequence_Guru_Leaderboard
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Guru" as Guru
+boundary "Dashboard & Leaderboard\n(dashboard/index.blade.php)" as View
+control "DashboardController" as Ctrl
+entity "Model Transaksi\n(presensi, jurnal_mengajar)" as Model
+
+title **SEQUENCE DIAGRAM - MELIHAT PERINGKAT DAN TOP SCORE GURU**
+
+activate Guru
+Guru -> View : 1: Buka dashboard / halaman utama
+activate View
+View -> Ctrl : 2: getLeaderboardTopScore()
+activate Ctrl
+
+Ctrl -> Model : 3: Ambil seluruh data transaksi guru "presensi, e-jurnal"
+activate Model
+Model --> Ctrl : 4: Return data transaksi presensi & e-jurnal
+deactivate Model
+
+Ctrl -> Ctrl : 5: Kalkulasi akumulasi perhitungan poin
+Ctrl -> Ctrl : 6: Urutkan data guru berdasarkan skor tertinggi
+Ctrl -> Ctrl : 7: Identifikasi posisi peringkat dan badge
+
+Ctrl --> View : 8: Return view data peringkat & skor
+deactivate Ctrl
+
+View --> Guru : 9: Tampilkan papan peringkat "Leaderboard / Top Score"
+View --> Guru : 10: Tampilkan card posisi ranking dan detail perolehan poin
+Guru -> View : 11: Selesai melihat peringkat dan skor
+
+deactivate View
+deactivate Guru
+@enduml

@@ -1,0 +1,57 @@
+@startuml Sequence_Guru_Login
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Guru" as Guru
+boundary "Halaman Login\n(auth/login.blade.php)" as View
+control "AuthController" as Ctrl
+entity "Model Karyawan\n(karyawan)" as Model
+
+title **SEQUENCE DIAGRAM - LOGIN GURU**
+
+activate Guru
+Guru -> View : 1: Buka halaman web
+activate View
+View --> Guru : 2: Tampilkan halaman login
+
+Guru -> View : 3: Masukan NIK dan password
+Guru -> View : 4: Klik tombol login
+View -> Ctrl : 5: prosesLogin(nik, password)
+activate Ctrl
+
+Ctrl -> Ctrl : 6: Terima data input login
+Ctrl -> Ctrl : 7: Validasi format input
+
+alt #FDEDEC Tidak (Input Tidak Valid / NIK & Password Salah)
+    Ctrl --> View : 8: Return status login gagal
+    View --> Guru : 9: Tampilkan pesan error
+else #EAFAF1 Ya (Kredensial Valid)
+    Ctrl -> Model : 10: Auth::guard('karyawan')->attempt(kredensial)
+    activate Model
+    Model --> Ctrl : 11: Return data user & otentikasi berhasil
+    deactivate Model
+
+    Ctrl -> Ctrl : 12: Buat sesi login (auth guard)
+    Ctrl --> View : 13: Arahkan ke halaman utama (redirect ke dashboard)
+    deactivate Ctrl
+    View --> Guru : 14: Tampilkan dashboard guru
+end
+
+deactivate View
+deactivate Guru
+@enduml

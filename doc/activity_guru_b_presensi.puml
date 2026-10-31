@@ -1,0 +1,51 @@
+@startuml Activity_Guru_Presensi
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Guru|
+start
+:Pilih menu presensi "masuk/pulang";
+:Izinkan akses kamera & lokasi GPS;
+:Arahkan kamera ke wajah;
+:Klik tombol presensi "masuk/pulang";
+
+|Sistem|
+:Ambil titik koordinat GPS perangkat;
+:Hitung jarak perangkat ke titik koordinat sekolah;
+
+if (Posisi dalam radius?) then (ya)
+    :Deteksi wajah dan face descriptor;
+    :Cocokan dengan face descriptor db;
+    if (Wajah cocok?) then (ya)
+        :Wajah terverifikasi;
+        |Guru|
+        :Tampilkan notifikasi "Presensi Berhasil";
+        stop
+    else (tidak)
+        |Sistem|
+        :Kirim notifikasi wajah tidak cocok;
+        stop
+    endif
+else (tidak)
+    |Sistem|
+    :Kirim notifikasi diluar radius;
+    stop
+endif
+@enduml

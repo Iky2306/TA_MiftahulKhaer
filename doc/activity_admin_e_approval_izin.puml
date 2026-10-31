@@ -1,0 +1,58 @@
+@startuml Activity_Admin_Approval_Izin
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Administrator|
+start
+:Akses menu "Izin, Sakit & Cuti" (/presensi/izinsakit);
+
+|Sistem|
+:Ambil data perizinan dari tabel pengajuan_izin & karyawan;
+:Tampilkan daftar pengajuan izin, sakit, dan cuti guru;
+
+|Administrator|
+:Pilih pengajuan perizinan yang akan diproses;
+:Periksa detail pengajuan & surat bukti lampiran (SID/Surat Izin);
+:Tentukan status keputusan persetujuan;
+
+if (Keputusan Administrator?) then (Disetujui / Approve)
+    |Administrator|
+    :Pilih opsi "Disetujui";
+    :Klik tombol "Proses";
+    |Sistem|
+    :Perbarui status_approved = 1 pada tabel pengajuan_izin;
+    :Buat record absensi otomatis pada tabel presensi\nuntuk seluruh rentang tanggal izin;
+    :Kirim notifikasi WhatsApp "DISETUJUI" ke nomor HP Guru;
+else (Ditolak / Reject)
+    |Administrator|
+    :Pilih opsi "Ditolak";
+    :Klik tombol "Proses";
+    |Sistem|
+    :Perbarui status_approved = 2 pada tabel pengajuan_izin;
+    :Kirim notifikasi WhatsApp "DITOLAK" ke nomor HP Guru;
+endif
+
+|Sistem|
+:Tampilkan notifikasi "Data Berhasil Diproses";
+:Muat ulang data daftar perizinan;
+|Administrator|
+:Melihat perubahan status pengajuan izin guru;
+stop
+@enduml

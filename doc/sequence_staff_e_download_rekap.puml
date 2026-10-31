@@ -1,0 +1,78 @@
+@startuml Sequence_Staff_Download_Rekap
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam sequence {
+    ArrowColor #2980B9
+    ActorBorderColor #1B4F72
+    LifeLineBorderColor #2980B9
+    LifeLineBackgroundColor #EBF5FB
+    ParticipantBorderColor #1B4F72
+    ParticipantBackgroundColor #EBF5FB
+    ParticipantFontColor #1B2631
+    GroupBorderColor #B7950B
+    GroupBackgroundColor #FEF9E7
+}
+
+actor "Staff" as Staff
+boundary "Halaman Rekap Gaji\n(payroll/guru/rekap.blade.php)" as View
+control "PayrollController" as Ctrl
+entity "Model Payroll\n(guru, setting_gaji_guru)" as Model
+control "ExportEngine\n(DomPDF / MaatwebsiteExcel)" as Engine
+
+title **SEQUENCE DIAGRAM - DOWNLOAD REKAP GAJI PDF / EXCEL (ROLE STAFF)**
+
+activate Staff
+Staff -> View : 1: Pilih menu "rekap gaji"
+activate View
+View --> Staff : 2: Tampilkan form filter periode
+
+Staff -> View : 3: Pilih periode bulan dan tahun
+View -> Ctrl : 4: rekapGajiGuru(bulan, tahun)
+activate Ctrl
+
+Ctrl -> Model : 5: Ambil data seluruh guru
+activate Model
+Model --> Ctrl : 6: Return data guru & setting tarif
+deactivate Model
+
+Ctrl -> Ctrl : 7: Kalkulasi komponen perhitungan gaji
+Ctrl --> View : 8: Return view rekapitulasi gaji
+deactivate Ctrl
+View --> Staff : 9: Tampilkan tabel guru rekapitulasi bulanan
+
+alt #EAFAF1 download pdf
+    Staff -> View : 10: Klik tombol download pdf
+    View -> Ctrl : 11: downloadPdf(bulan, tahun)
+    activate Ctrl
+
+    Ctrl -> Engine : 12: Generate dokumen pdf rekap gaji
+    activate Engine
+    Engine --> Ctrl : 13: Return berkas PDF
+    deactivate Engine
+
+    Ctrl --> View : 14: Kirim file pdf
+    deactivate Ctrl
+    View --> Staff : 15: Unduh dan simpan rekap gaji pdf
+
+else #FEF9E7 download excel
+    Staff -> View : 16: Klik tombol download excel
+    View -> Ctrl : 17: downloadExcel(bulan, tahun)
+    activate Ctrl
+
+    Ctrl -> Engine : 18: Generate dokumen excel rekap gaji
+    activate Engine
+    Engine --> Ctrl : 19: Return berkas Excel (.xlsx)
+    deactivate Engine
+
+    Ctrl --> View : 20: Kirim file excel
+    deactivate Ctrl
+    View --> Staff : 21: Unduh dan simpan rekap gaji excel
+end
+
+deactivate View
+deactivate Staff
+@enduml

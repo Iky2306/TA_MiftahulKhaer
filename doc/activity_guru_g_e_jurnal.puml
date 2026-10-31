@@ -1,0 +1,50 @@
+@startuml Activity_Guru_E_Jurnal
+!theme plain
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+
+skinparam activity {
+    BackgroundColor #EBF5FB
+    BorderColor #2980B9
+    FontColor #1B2631
+    FontSize 11
+}
+
+skinparam diamond {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    FontColor #7D6608
+    FontSize 10
+}
+
+|Guru|
+start
+:Pilih menu "E-Jurnal";
+:Klik tombol "Scan QR Code Kelas";
+:Arahkan kamera ke QR Code kelas;
+
+|Sistem|
+:Pindai kode batang / qr token;
+:Validasi qr token;
+if (QR Token Valid?) then (ya)
+    :Ambil data kelas dan daftar mapel kelas;
+    |Guru|
+    :Tampilkan form pengisian e-jurnal;
+    :Pilih mapel yang diampu;
+    :Input jam mulai/selesai mengajar;
+    :Input ringkasan materi pembelajaran;
+    :Klik tombol "Simpan E-Jurnal";
+    |Sistem|
+    :Validasi kelengkapan form input e-jurnal;
+    :Simpan data;
+    |Guru|
+    :Tampilkan notifikasi;
+    stop
+else (tidak)
+    |Sistem|
+    :Kirim pesan error validasi qr;
+    stop
+endif
+@enduml
